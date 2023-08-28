@@ -45,6 +45,11 @@ public class UserService {
         repository.save(findUser);
     }
 
+    public void deleteAll() {
+        log.info("Service 호출 -> 전부 삭제");
+        repository.deleteAll();
+    }
+
     public Users findById(Long userId) {
         log.info("findById 호출");
         return repository.findById(userId).orElseThrow(NoSuchElementException::new);

@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/register") // 회원가입
-    public ResponseEntity signUp(@RequestBody UserSaveDto userSaveDto) {
+    public ResponseEntity signUp(@Valid @RequestBody UserSaveDto userSaveDto) {
         log.info("Controller 호출 -> 회원가입");
         log.info("가입정보 -> 이메일 = {}", userSaveDto.getEmail());
 
@@ -47,7 +47,7 @@ public class UserController {
 
     @PutMapping("/update/{userId}") // 회원정보 수정
     public ResponseEntity update(@PathVariable @Positive Long userId,
-                       @Valid @RequestBody UserPatchDto userPatchDto) {
+                                 @Valid @RequestBody UserPatchDto userPatchDto) {
         log.info("Controller 호출 -> 회원정보 수정");
         log.info("수정정보 -> 닉네임 = {}, 프로필사진 = {}",
                 userPatchDto.getNickName(), userPatchDto.getProFilePicture());
@@ -62,7 +62,7 @@ public class UserController {
 
     @PutMapping("/password/{userId}") // 비밀번호 변경. 임시로 작성. 후에 로그인 되어있는지 확인하는 코드와 로그아웃 시키는 코드가 필요할듯?
     public String updatePassword(@PathVariable Long userId,
-                               @Valid @RequestBody PasswordDto passwordDto) {
+                                 @Valid @RequestBody PasswordDto passwordDto) {
         log.info("Controller 호출 -> 비밀번호 수정");
 
         service.changePw(userId, passwordDto);
@@ -79,6 +79,15 @@ public class UserController {
 
         return new ResponseEntity("삭제 완료", HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete/all") // 테스트용 모두 삭제
+    public ResponseEntity deleteAll() {
+        log.info("Controller 호출 -> 전부 삭제");
+
+        service.deleteAll();
+        return new ResponseEntity("전부삭제 완료", HttpStatus.OK);
+    }
+
 
     private UserResponseDto createResponseDto(Users user) {
         return mapper.UsertoUserResponseDto(user);

@@ -28,7 +28,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          cd server
+          cd SERVER
           chmod +x gradlew
           ./gradlew build
           cd ..

@@ -10,8 +10,6 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
     Users UserSaveDTOtoUser(UserSaveDto userSaveDto);
 
-    Users UserPatchDTOtoUser(UserPatchDto userPatchDto);
-
     UserResponseDto UsertoUserResponseDto(Users user);
 
 

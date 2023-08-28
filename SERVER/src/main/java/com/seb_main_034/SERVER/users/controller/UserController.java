@@ -6,6 +6,7 @@ import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.dto.UserResponseDto;
 import com.seb_main_034.SERVER.users.dto.UserSaveDto;
 import com.seb_main_034.SERVER.users.entity.Users;
+import com.seb_main_034.SERVER.users.mapper.PatchMapper;
 import com.seb_main_034.SERVER.users.mapper.UserMapper;
 import com.seb_main_034.SERVER.users.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class UserController {
 
     private final UserService service;
     private final UserMapper mapper;
+    private final PatchMapper patchMapper;
 
     @GetMapping("/info/{userId}") // 회원조회
     public ResponseEntity info(@PathVariable @Positive Long userId) {
@@ -52,11 +54,10 @@ public class UserController {
         log.info("수정정보 -> 닉네임 = {}, 프로필사진 = {}",
                 userPatchDto.getNickName(), userPatchDto.getProFilePicture());
 
-        Users update = mapper.UserPatchDTOtoUser(userPatchDto);
+        Users findUser = service.findById(userId);
+        Users updatedUser = service.update(patchMapper.UserPatchDTOtoUser(findUser, userPatchDto));
 
-        Users updateUser = service.update(userId, update);
-
-        return new ResponseEntity<>(createResponseDto(updateUser), HttpStatus.OK);
+        return new ResponseEntity<>(createResponseDto(updatedUser), HttpStatus.OK);
 
     }
 

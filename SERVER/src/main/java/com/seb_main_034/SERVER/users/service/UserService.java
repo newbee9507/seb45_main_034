@@ -23,12 +23,8 @@ public class UserService {
         return repository.save(user);
     }
 
-    public Users update(Long userId, Users user) {
+    public Users update(Users user) {
         log.info("Service 호출 -> 업데이트");
-        Users findUser = findById(userId);
-
-        user.setUserId(findUser.getUserId());
-        user.setEmail(findUser.getEmail());
 
         return repository.save(user);
     }

@@ -6,7 +6,6 @@ import com.seb_main_034.SERVER.users.dto.UserSaveDto;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.mapper.UserMapper;
 import com.seb_main_034.SERVER.users.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

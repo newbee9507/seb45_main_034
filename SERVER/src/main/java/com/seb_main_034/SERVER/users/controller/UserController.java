@@ -1,6 +1,7 @@
 package com.seb_main_034.SERVER.users.controller;
 
 
+import com.seb_main_034.SERVER.users.dto.PasswordDto;
 import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.dto.UserResponseDto;
 import com.seb_main_034.SERVER.users.dto.UserSaveDto;
@@ -59,7 +60,17 @@ public class UserController {
 
     }
 
-    @DeleteMapping("/delete/{userId}")
+    @PutMapping("/password/{userId}") // 비밀번호 변경. 임시로 작성. 후에 로그인 되어있는지 확인하는 코드와 로그아웃 시키는 코드가 필요할듯?
+    public String updatePassword(@PathVariable Long userId,
+                               @Valid @RequestBody PasswordDto passwordDto) {
+        log.info("Controller 호출 -> 비밀번호 수정");
+
+        service.changePw(userId, passwordDto);
+
+        return "비밀번호 변경 완료!";
+    }
+
+    @DeleteMapping("/delete/{userId}") // 회원탈퇴
     public ResponseEntity delete(@PathVariable @Positive Long userId) {
         log.info("Controller 호출 -> 회원탈퇴");
 

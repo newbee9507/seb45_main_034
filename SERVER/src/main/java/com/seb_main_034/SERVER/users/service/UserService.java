@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.users.service;
 
+import com.seb_main_034.SERVER.users.dto.PasswordDto;
 import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.repository.UserRepository;
@@ -37,10 +38,15 @@ public class UserService {
         repository.delete(user);
     }
 
+    public void changePw(Long userId, PasswordDto passwordDto) {
+        log.info("Service 호출 -> 비밀번호 변경");
+        Users findUser = findById(userId);
+        findUser.setPassWord(passwordDto.getPassWord());
+        repository.save(findUser);
+    }
+
     public Users findById(Long userId) {
         log.info("findById 호출");
         return repository.findById(userId).orElseThrow(NoSuchElementException::new);
     }
-
-
 }

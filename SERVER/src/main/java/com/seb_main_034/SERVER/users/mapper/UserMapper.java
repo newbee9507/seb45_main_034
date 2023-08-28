@@ -1,6 +1,7 @@
 package com.seb_main_034.SERVER.users.mapper;
 
 import com.seb_main_034.SERVER.users.dto.UserPatchDto;
+import com.seb_main_034.SERVER.users.dto.UserResponseDto;
 import com.seb_main_034.SERVER.users.dto.UserSaveDto;
 import com.seb_main_034.SERVER.users.entity.Users;
 import org.mapstruct.Mapper;
@@ -10,4 +11,8 @@ public interface UserMapper {
     Users UserSaveDTOtoUser(UserSaveDto userSaveDto);
 
     Users UserPatchDTOtoUser(UserPatchDto userPatchDto);
+
+    UserResponseDto UsertoUserResponseDto(Users user);
+
+
 }

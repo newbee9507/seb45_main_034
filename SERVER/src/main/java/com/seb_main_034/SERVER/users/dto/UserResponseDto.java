@@ -10,15 +10,15 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class UserSaveDto {
+@AllArgsConstructor
+public class UserResponseDto {
 
+    @NotBlank
+    private Long userId;
+
+    @NotBlank
     @Email
-    @NotBlank
     private String email;
-
-    @NotBlank
-    @Length(min = 8)
-    private String passWord;
 
     @Length(min = 2)
     private String nickName;

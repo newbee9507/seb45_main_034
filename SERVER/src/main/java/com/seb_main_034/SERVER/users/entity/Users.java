@@ -2,6 +2,7 @@ package com.seb_main_034.SERVER.users.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Email;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 public class Users {
 
@@ -22,13 +24,18 @@ public class Users {
     @Email
     private String email;
 
+    @Length(min = 8)
     private String passWord;
 
     @Length(min = 4)
-    private String userName;
+    private String nickName;
 
-    private String proFile;
+    private String proFilePicture;
 
     public Users() {
+    }
+
+    private void update(Users user) {
+
     }
 }

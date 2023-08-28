@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.users.service;
 
+import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,13 @@ public class UserService {
         return repository.save(user);
     }
 
-    public Users update(Users user) {
+    public Users update(Long userId, Users user) {
         log.info("Service 호출 -> 업데이트");
+        Users findUser = findById(userId);
+
+        user.setUserId(findUser.getUserId());
+        user.setEmail(findUser.getEmail());
+
         return repository.save(user);
     }
 
@@ -35,4 +41,6 @@ public class UserService {
         log.info("findById 호출");
         return repository.findById(userId).orElseThrow(NoSuchElementException::new);
     }
+
+
 }

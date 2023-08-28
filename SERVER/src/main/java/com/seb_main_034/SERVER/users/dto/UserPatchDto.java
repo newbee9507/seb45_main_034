@@ -8,17 +8,10 @@ import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class UserPatchDto {
-    
-    @Positive
-    private Long userId;
 
-    @Length(min = 8)
-    private String passWord;
+    @Length(min = 2)
+    private String nickName;
 
-    @Length(min = 4)
-    private String userName;
-
-    private String proFile;
+    private String proFilePicture;
 }

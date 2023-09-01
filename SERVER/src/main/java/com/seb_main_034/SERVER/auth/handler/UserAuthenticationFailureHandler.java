@@ -2,7 +2,6 @@ package com.seb_main_034.SERVER.auth.handler;
 
 import com.seb_main_034.SERVER.exception.ExceptionCode;
 import com.seb_main_034.SERVER.exception.UserException;
-import com.seb_main_034.SERVER.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

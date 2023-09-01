@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PatchMapperImp implements PatchMapper{
 
+
+    // 유저정보 수정시, 닉네임과 프로필사진 중 하나만 수정할 수 있게 하는 매퍼.
     @Override
     public Users UserPatchDTOtoUser(Users user, UserPatchDto userPatchDto) {
 

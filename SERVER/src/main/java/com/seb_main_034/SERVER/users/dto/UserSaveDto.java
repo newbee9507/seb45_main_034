@@ -1,6 +1,5 @@
 package com.seb_main_034.SERVER.users.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -13,12 +12,12 @@ import javax.validation.constraints.NotBlank;
 public class UserSaveDto {
 
     @Email
-    @NotBlank
+    @NotBlank(message = "필수 기입 항목입니다")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "필수 기입 항목입니다")
     @Length(min = 8)
-    private String passWord;
+    private String password;
 
     @Length(min = 2)
     private String nickName;

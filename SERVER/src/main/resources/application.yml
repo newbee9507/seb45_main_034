@@ -1,15 +1,33 @@
 spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
   datasource:
-    url: ${DB_ENDPOINT}
-    username: admin
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:test
   jpa:
-    database: mysql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create  # (1) 스키마 자동 생성
+    show-sql: true      # (2) SQL 쿼리 출력
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        highlight_sql: true
+        format_sql: true  # (3) SQL pretty print
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: TRACE
+server:
+  servlet:
+    encoding:
+      force-response: true
+
+mail:
+  address:
+    admin: admin@gmail.com
+
+jwt:
+  key: awfnehjfuwifnow3ufapsduf2p3894enj
+  access-token-life-time: 30
+  refresh-token-life-time: 120

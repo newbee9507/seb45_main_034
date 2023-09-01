@@ -47,7 +47,7 @@ public class UserController {
         return new ResponseEntity<>(createResponseDto(savedUser), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{userId}") // 회원정보 수정
+    @PutMapping("/update/{userId}") // 회원정보 수정 가입할 때 닉네임과 사진을 등록하지 않아도, 여기서 등록할 수 있음 비어있는걸 보내면 사용중이던 것 그대로 사용
     public ResponseEntity update(@PathVariable @Positive Long userId,
                                  @Valid @RequestBody UserPatchDto userPatchDto) {
         log.info("Controller 호출 -> 회원정보 수정");
@@ -88,8 +88,7 @@ public class UserController {
         service.deleteAll();
         return new ResponseEntity("전부삭제 완료", HttpStatus.OK);
     }
-
-
+    
     private UserResponseDto createResponseDto(Users user) {
         return mapper.UsertoUserResponseDto(user);
     }

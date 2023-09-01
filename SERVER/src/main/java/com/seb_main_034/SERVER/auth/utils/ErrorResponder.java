@@ -1,7 +1,6 @@
 package com.seb_main_034.SERVER.auth.utils;
 
 import com.seb_main_034.SERVER.exception.ExceptionCode;
-import com.seb_main_034.SERVER.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

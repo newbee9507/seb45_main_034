@@ -25,7 +25,9 @@ jobs:
           spring.datasource.url: ${{ secrets.DB_ENDPOINT }}
           spring.datasource.username: admin
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
-
+          mail.address.admin: ${{ secrets.ADMIN_MAIL }}
+          jwt.key: ${{ JWT_SECRET_KEY }}
+          
       - name: Build with Gradle
         run: |
           cd SERVER

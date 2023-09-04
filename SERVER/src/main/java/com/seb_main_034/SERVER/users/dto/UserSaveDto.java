@@ -19,6 +19,7 @@ public class UserSaveDto {
     @Length(min = 8)
     private String password;
 
+    @NotBlank
     @Length(min = 2)
     private String nickName;
 

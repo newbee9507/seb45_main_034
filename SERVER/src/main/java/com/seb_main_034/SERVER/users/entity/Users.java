@@ -6,8 +6,6 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +23,11 @@ public class Users {
     private String email;
 
     @Length(min = 8, max = 200)
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Length(min = 2)
+    @Column(nullable = false, unique = true)
     private String nickName;
 
     private String proFilePicture;
@@ -39,4 +38,7 @@ public class Users {
     public Users() {
     }
 
+    public Users(String email) {
+        this.email = email;
+    } // 소셜로그인시 필요함
 }

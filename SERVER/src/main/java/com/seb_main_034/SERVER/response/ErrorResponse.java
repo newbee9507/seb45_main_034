@@ -1,31 +1,31 @@
 package com.seb_main_034.SERVER.response;
 
-import com.seb_main_034.SERVER.exception.ExceptionCode;
+import com.seb_main_034.SERVER.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
-import java.util.List;
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ErrorResponse {
 
-//@Getter
-//@AllArgsConstructor
-//@NoArgsConstructor
-//public class ErrorResponse {
-//
-//    private List<Cause> causes;
-//    private RuntimeException exception;
-//
-//    public ErrorResponse of(ExceptionCode code) {
-//        Cause cause = new Cause(code.getStatus(), code.getMessage());
-//        this.causes.add(cause);
-//        return this;
-//    }
-//
-//    @Getter
-//    @AllArgsConstructor
-//    public static class Cause {
-//        private int status;
-//        private String message;
-//    }
-//}
+    private int status;
+    private String message;
+
+    public static ErrorResponse errorResponse(UserException userException) {
+        int status = userException.getCode().getStatus();
+        String message = userException.getCode().getMessage();
+
+        return new ErrorResponse(status, message);
+    }
+
+    public static ErrorResponse verificationErrorResponse(HttpStatus httpStatus) {
+        int status = httpStatus.value();
+        String message = httpStatus.getReasonPhrase();
+
+        return new ErrorResponse(status, message);
+    }
+
+}

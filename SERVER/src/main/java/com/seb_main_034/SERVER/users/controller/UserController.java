@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class UserController {
     private final UserMapper mapper;
     private final PatchMapper patchMapper;
 
-    @GetMapping("/info/{userId}") // 회원조회
+    @GetMapping("/info/user/{userId}") // 회원조회
     public ResponseEntity info(@PathVariable @Positive Long userId) {
         log.info("Controller 호출 -> 회원조회");
         Users findUser = service.findById(userId);
@@ -35,8 +36,16 @@ public class UserController {
         return new ResponseEntity<>(createResponseDto(findUser), HttpStatus.OK);
     }
 
+    @GetMapping("/info/all")
+    public ResponseEntity allUsers() {
+        log.info("Controller 호출 -> 모든 유저목록 조회");
+        List<Users> usersList = service.findAllUsers();
+        return new ResponseEntity<>(usersList, HttpStatus.OK);
+    }
+
     @PostMapping("/register") // 회원가입
     public ResponseEntity signUp(@Valid @RequestBody UserSaveDto userSaveDto) {
+
         log.info("Controller 호출 -> 회원가입");
         log.info("가입정보 -> 이메일 = {}", userSaveDto.getEmail());
 
@@ -47,7 +56,7 @@ public class UserController {
         return new ResponseEntity<>(createResponseDto(savedUser), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{userId}") // 회원정보 수정 가입할 때 닉네임과 사진을 등록하지 않아도, 여기서 등록할 수 있음 비어있는걸 보내면 사용중이던 것 그대로 사용
+    @PutMapping("/update/{userId}") // 회원정보 수정 가입할 때 사진을 등록하지 않아도, 여기서 등록할 수 있음 비어있는걸 보내면 사용중이던 것 그대로 사용
     public ResponseEntity update(@PathVariable @Positive Long userId,
                                  @Valid @RequestBody UserPatchDto userPatchDto) {
         log.info("Controller 호출 -> 회원정보 수정");

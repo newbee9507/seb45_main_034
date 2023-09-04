@@ -1,11 +1,11 @@
 package com.seb_main_034.SERVER.configuration;
 
-import com.seb_main_034.SERVER.auth.filter.JwtVerificationFilter;
-import com.seb_main_034.SERVER.auth.handler.UserAuthenticationFailureHandler;
-import com.seb_main_034.SERVER.auth.handler.UserAuthenticationSuccessHandler;
-import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
 import com.seb_main_034.SERVER.auth.filter.JwtAuthenticationFilter;
-import com.seb_main_034.SERVER.auth.utils.MyAuthorityUtils;
+import com.seb_main_034.SERVER.auth.filter.JwtVerificationFilter;
+import com.seb_main_034.SERVER.auth.handler.*;
+import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
+import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
+import com.seb_main_034.SERVER.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,9 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,7 +31,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
-    private final MyAuthorityUtils authorityUtils;
+    private final UsersAuthorityUtils authorityUtils;
+    private final UserService service;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -46,22 +45,26 @@ public class SecurityConfiguration {
                 .and()
                 .formLogin().disable() // CSR 방식으로 만들기 때문에 SSR 방식에서 사용하는 폼 로그인 비활성화.
                 .httpBasic().disable() // Request를 전송할 때마다 ID,PASSWORD를 헤더에 실어서 인증하는 방식을 비활성화
+                .exceptionHandling()
+                .authenticationEntryPoint(new UserAuthenticationEntryPoint())
+                .accessDeniedHandler(new UserAccessDeniedHandler())
+                .and()
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->authorize
-                        .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
-                        .antMatchers("/api/users/**").hasRole("USER") // 일반유저는 자신의 정보조회 및 수정탈퇴에 접근가능 로그인 및 로그아웃은 버튼을 숨기면 되는게 아닐까?
-                        .antMatchers(HttpMethod.GET, "api/movies").permitAll() // 비회원은 영회목록조회만 가능 태그가붙으면 주소가 바뀌는지 생각해봐야 함
-                        .antMatchers(HttpMethod.GET, "/api/movies/**").hasRole("USER") // 일반유저는 영화목록조회 및 감상만 가능
-                        .antMatchers("/api/**").hasRole("ADMIN"));// 관리자는 모든 uri 접근가능
+//                        .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
+//                        .antMatchers(HttpMethod.PUT, "/api/users/**").hasRole("USER") // 회원은 자신의 정보조회 및 수정탈퇴에 접근가능
+//                        .antMatchers(HttpMethod.GET, "/api/users/info/user/**").hasAnyRole("USER", "ADMIN") // 관리자와 회원은 자신의 정보를 열람할 수 있음
+//                        .antMatchers("/api/users/info/all").hasRole("ADMIN") // 관리자는 모든회원 목록을 열람할 수 있음
+//                        .antMatchers(HttpMethod.GET, "api/movies").permitAll() // 비회원은 영회목록조회만 가능 태그가붙으면 주소가 바뀌는지 생각해봐야 함
+//                        .antMatchers(HttpMethod.GET, "/api/movies/**").hasRole("USER") // 일반유저는 영화목록조회 및 감상만 가능
+//                        .antMatchers("/api/**").hasRole("ADMIN")) // 관리자는 모든 uri 접근가능
+                        .antMatchers(HttpMethod.GET, "/api/users/info/all").hasRole("ADMIN") // 테스트용, 관리자만 모든회원 목록을 조회
+                        .antMatchers("/api/**").permitAll()) // 테스트용. 모든 기능 가능
+                        .oauth2Login(oauth2 -> oauth2.successHandler(
+                                new OAuth2SuccessHandler(jwtTokenizer, authorityUtils, service)));
 
         return http.build();
-    }
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
@@ -102,7 +105,8 @@ public class SecurityConfiguration {
 
 
             builder.addFilter(jwtAuthenticationFilter)
-                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class); // 시큐리티 필터체인에 인증 -> 자격검증 순으로 추가
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class) // 시큐리티 필터체인에 인증 -> 자격검증 순으로 추가
+                    .addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class); // 소셜로그인쪽 코드. 불완전.
         }
     }
 }

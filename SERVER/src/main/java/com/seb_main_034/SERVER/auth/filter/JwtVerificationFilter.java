@@ -1,7 +1,7 @@
 package com.seb_main_034.SERVER.auth.filter;
 
 import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
-import com.seb_main_034.SERVER.auth.utils.MyAuthorityUtils;
+import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래스를 상속받아 request당 한번만 실행되는 필터생성
 
     private final JwtTokenizer jwtTokenizer;
-    private final MyAuthorityUtils authorityUtils;
+    private final UsersAuthorityUtils authorityUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

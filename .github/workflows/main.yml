@@ -25,6 +25,8 @@ jobs:
           spring.datasource.url: ${{ secrets.DB_ENDPOINT }}
           spring.datasource.username: admin
           spring.datasource.password: ${{ secrets.DB_PASSWORD }}
+          spring.security.oauth2.client.registration.google.clientId: ${{ secrets.CLIENT_ID }}
+          spring.security.oauth2.client.registration.google.clientSecret: ${{ secrets.CLIENT_SECRET }}
           mail.address.admin: ${{ secrets.ADMIN_MAIL }}
           jwt.key: ${{ secrets.JWT_SECRET_KEY }}
 

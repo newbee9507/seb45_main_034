@@ -2,7 +2,7 @@ package com.seb_main_034.SERVER.auth.userdetails;
 
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.repository.UserRepository;
-import com.seb_main_034.SERVER.auth.utils.MyAuthorityUtils;
+import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UsersDetailsService implements UserDetailsService {
 
     private final UserRepository repository;
-    private final MyAuthorityUtils authorityUtils; // 권한부여를 위한 클래스
+    private final UsersAuthorityUtils authorityUtils; // 권한부여를 위한 클래스
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { // db에서 유저정보를 찾아 스프링 시큐리티에게 인증을 위임(?)

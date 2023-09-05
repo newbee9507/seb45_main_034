@@ -43,7 +43,7 @@ public class UserService {
 
     public Users update(Users user) {
         log.info("Service 호출 -> 업데이트");
-        if (repository.findBynickName(user.getNickName()).isPresent()) {
+        if (repository.findBynickName(user.getNickName()).isEmpty()) {
             throw new UserException(ExceptionCode.NICKNAME_EXISTS);
         }
         return repository.save(user);

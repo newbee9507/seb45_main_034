@@ -4,7 +4,9 @@ import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import com.seb_main_034.SERVER.exception.ExceptionCode;
 import com.seb_main_034.SERVER.exception.UserException;
 import com.seb_main_034.SERVER.users.dto.PasswordDto;
+import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.entity.Users;
+import com.seb_main_034.SERVER.users.mapper.PatchMapper;
 import com.seb_main_034.SERVER.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository repository;
+    private final PatchMapper patchMapper;
     private final PasswordEncoder encoder;
     private final UsersAuthorityUtils authorityUtils; // 권한 설정을 위한 클래스
 
@@ -41,12 +44,13 @@ public class UserService {
         return repository.save(user);
     }
 
-    public Users update(Users user) {
+    public Users update(Long userId, UserPatchDto userPatchDto) {
         log.info("Service 호출 -> 업데이트");
-        if (repository.findBynickName(user.getNickName()).isEmpty()) {
+        Users findUser = findById(userId);
+        if (repository.findBynickName(userPatchDto.getNickName()).isPresent()) {
             throw new UserException(ExceptionCode.NICKNAME_EXISTS);
         }
-        return repository.save(user);
+        return repository.save(patchMapper.UserPatchDTOtoUser(findUser,userPatchDto));
     }
 
     public void delete(Users user) {

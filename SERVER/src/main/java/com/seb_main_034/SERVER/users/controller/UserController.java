@@ -63,8 +63,7 @@ public class UserController {
         log.info("수정정보 -> 닉네임 = {}, 프로필사진 = {}",
                 userPatchDto.getNickName(), userPatchDto.getProFilePicture());
 
-        Users findUser = service.findById(userId);
-        Users updatedUser = service.update(patchMapper.UserPatchDTOtoUser(findUser, userPatchDto));
+        Users updatedUser = service.update(userId, userPatchDto);
 
         return new ResponseEntity<>(createResponseDto(updatedUser), HttpStatus.OK);
 

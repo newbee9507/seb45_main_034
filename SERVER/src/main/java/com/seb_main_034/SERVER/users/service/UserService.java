@@ -30,7 +30,7 @@ public class UserService {
 
     public Users save(Users user) {
         log.info("Service 호출 -> 저장");
-        if (checkEmail(user.getEmail())) { // 이미 서버에 존재하는 이메일인지 확인
+        if (checkEmail(user.getEmail(), user.getNickName())) { // 이미 서버에 존재하는 이메일인지 확인
             user.setPassword(encoder.encode(user.getPassword())); // 비밀번호 암호화
             List<String> roles = authorityUtils.createRoles(user.getEmail()); // 권한 설정
             user.setRoles(roles);
@@ -97,12 +97,17 @@ public class UserService {
      * 회원가입시, 이메일과 닉네임의 중복을 체크하는 메서드.
      * 단, 닉네임이 null로 같아도 에러가나는데, 이 부분 수정 필요.
      */
-    public boolean checkEmail(String email) {
+    public boolean checkEmail(String email, String nickName) {
         log.info("이메일과 닉네임 체크");
 
         if (repository.findByEmail(email).isPresent()) {
             log.error("이미 존재하는 회원입니다.");
             throw new UserException(ExceptionCode.USER_EXISTS);
+        }
+
+        if (repository.findBynickName(nickName).isPresent()) {
+            log.error("이미 존재하는 닉네임입니다.");
+            throw new UserException(ExceptionCode.NICKNAME_EXISTS);
         }
         return true;
     }

@@ -20,13 +20,11 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                                         Authentication authentication) throws IOException, ServletException {
 
         Users principal = (Users) authentication.getPrincipal();
-        String nickName = principal.getNickName(); // 인증에서 유저정보를 가져오고, 그 중 닉네임을 가져옴.
-        if (nickName == null) {
-            nickName = "nulltest";
-        }
-        response.setHeader("nickName", nickName); // null이면 헤더가 생기지 않음
+        String email = principal.getEmail(); // 인증에서 유저정보를 가져오고, 그 중 닉네임을 가져옴.
 
-        log.info("{}님, 환영합니다",nickName);
+        response.setHeader("email", email); // null이면 헤더가 생기지 않음
+
+        log.info("{} 회원 로그인 성공", email);
 
     }
 }

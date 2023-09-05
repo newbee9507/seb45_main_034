@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.response;
 
+import com.seb_main_034.SERVER.exception.ExceptionCode;
 import com.seb_main_034.SERVER.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class ErrorResponse {
 
     public static ErrorResponse verificationErrorResponse(HttpStatus httpStatus) {
         int status = httpStatus.value();
-        String message = httpStatus.getReasonPhrase();
+        String message = ExceptionCode.LOGIN_FAIL.getMessage(); // 유동적인 코드로 수정이필요.
 
         return new ErrorResponse(status, message);
     }

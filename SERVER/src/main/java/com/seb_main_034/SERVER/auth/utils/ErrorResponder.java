@@ -12,7 +12,7 @@ public class ErrorResponder {
 
     public static void sendErrorResponse(HttpServletResponse response, HttpStatus status) throws IOException {
         Gson gson = new Gson();
-        ErrorResponse errorResponse = ErrorResponse.verificationErrorResponse(status);
+        ErrorResponse errorResponse = ErrorResponse.sendErrorResponse(status);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(errorResponse.getStatus());
         response.getWriter().write(gson.toJson(errorResponse, ErrorResponse.class));

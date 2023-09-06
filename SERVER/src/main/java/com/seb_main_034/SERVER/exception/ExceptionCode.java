@@ -11,6 +11,7 @@ public enum ExceptionCode {
     USER_NOT_FOUND(404, "회원을 찾을 수 없습니다"),
     USER_EXISTS(409, "이미 존재하는 유저입니다"),
     NICKNAME_EXISTS(409, "이미 존재하는 닉네임입니다"),
+    SERVER_ERROR(500, "잠시 후 다시 시도해주세요. 반복된다면 1:1 문의를 해 주시면 빠르게 해결해드리겠습니다."),
     NOT_IMPLEMENTATION(501, "개발중입니다. 빠른 시일내에 찾아뵙도록 노력하겠습니다");
 
     private final int status;

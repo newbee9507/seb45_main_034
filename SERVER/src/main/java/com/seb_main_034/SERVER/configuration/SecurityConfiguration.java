@@ -107,7 +107,7 @@ public class SecurityConfiguration {
 
 
             builder.addFilter(jwtAuthenticationFilter)
-                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class) // 시큐리티 필터체인에 인증 -> 자격검증 순으로 추가
+                    .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class); // 시큐리티 필터체인에 인증 -> 자격검증 순으로 추가
 //                    .addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class); // 소셜로그인쪽 코드. 불완전.
         }
     }

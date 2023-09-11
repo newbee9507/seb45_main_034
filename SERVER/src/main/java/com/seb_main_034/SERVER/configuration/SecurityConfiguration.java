@@ -4,6 +4,7 @@ import com.seb_main_034.SERVER.auth.filter.JwtAuthenticationFilter;
 import com.seb_main_034.SERVER.auth.filter.JwtVerificationFilter;
 import com.seb_main_034.SERVER.auth.handler.*;
 import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
+import com.seb_main_034.SERVER.auth.userdetails.UsersDetailsService;
 import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import com.seb_main_034.SERVER.users.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
     private final UsersAuthorityUtils authorityUtils;
-    private final UserService service;
+    private final UserService userService;
+    private final UsersDetailsService usersDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,9 +62,9 @@ public class SecurityConfiguration {
 //                        .antMatchers(HttpMethod.GET, "/api/movies/**").hasRole("USER") // 일반유저는 영화목록조회 및 감상만 가능
 //                        .antMatchers("/api/**").hasRole("ADMIN")) // 관리자는 모든 uri 접근가능
                         .antMatchers(HttpMethod.GET, "/api/users/info/all").hasRole("ADMIN") // 테스트용, 관리자만 모든회원 목록을 조회
-                        .antMatchers("/api/**").permitAll()) // 테스트용. 모든 기능 가능
-                        .oauth2Login(oauth2 -> oauth2.successHandler(
-                                new OAuth2SuccessHandler(jwtTokenizer, authorityUtils, service)));
+                        .antMatchers("/api/**").permitAll()); // 테스트용. 모든 기능 가능
+//                        .oauth2Login(oauth2 -> oauth2.successHandler(
+//                                new OAuth2SuccessHandler(jwtTokenizer, authorityUtils, userService)));
 
         return http.build();
     }
@@ -101,12 +103,12 @@ public class SecurityConfiguration {
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new UserAuthenticationFailureHandler());
 
             //자격 증명 및 검증을 하는 객채 생성
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils);
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils, usersDetailsService);
 
 
             builder.addFilter(jwtAuthenticationFilter)
                     .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class) // 시큐리티 필터체인에 인증 -> 자격검증 순으로 추가
-                    .addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class); // 소셜로그인쪽 코드. 불완전.
+//                    .addFilterAfter(jwtVerificationFilter, OAuth2LoginAuthenticationFilter.class); // 소셜로그인쪽 코드. 불완전.
         }
     }
 }

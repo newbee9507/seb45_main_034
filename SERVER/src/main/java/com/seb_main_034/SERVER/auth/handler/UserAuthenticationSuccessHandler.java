@@ -1,7 +1,10 @@
 package com.seb_main_034.SERVER.auth.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -19,12 +22,16 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
+        ObjectMapper objectMapper = new ObjectMapper();
         Users principal = (Users) authentication.getPrincipal();
-        String email = principal.getEmail(); // 인증에서 유저정보를 가져오고, 그 중 닉네임을 가져옴.
+        String nickName = principal.getNickName();
 
-        response.setHeader("email", email); // null이면 헤더가 생기지 않음
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        objectMapper.writeValue(response.getWriter(), nickName);
 
-        log.info("{} 회원 로그인 성공", email);
+        log.info("{} 회원 로그인 성공", principal);
 
     }
 }

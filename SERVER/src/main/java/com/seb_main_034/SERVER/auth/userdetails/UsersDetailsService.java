@@ -1,5 +1,7 @@
 package com.seb_main_034.SERVER.auth.userdetails;
 
+import com.seb_main_034.SERVER.exception.ExceptionCode;
+import com.seb_main_034.SERVER.exception.GlobalException;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.repository.UserRepository;
 import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
@@ -23,10 +25,10 @@ public class UsersDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { // db에서 유저정보를 찾아 스프링 시큐리티에게 인증을 위임(?)
-        Optional<Users> optionalUsers = repository.findByEmail(email); // 이 프로젝트는 로그인 시 Id를 이메일로 사용함
-        Users findUser = optionalUsers.orElseThrow(() -> new NoSuchElementException("가입되지 않은 이메일입니다"));
+        Users User = repository.findByEmail(email).orElseThrow(
+                () -> new GlobalException(ExceptionCode.USER_NOT_FOUND)); // 이 프로젝트는 로그인 시 Id를 이메일로 사용함
 
-        return new UsersDetails(findUser);
+        return new UsersDetails(User);
     }
 
     /**
@@ -35,11 +37,11 @@ public class UsersDetailsService implements UserDetailsService {
     private final class UsersDetails extends Users implements UserDetails { //
 
         UsersDetails(Users user) { // db에서 가져온 유저를 시큐리티가 검증하기 위한 객체를 만듬. db에있는 유저정보와 일치해야 함
-            setUserId(user.getUserId()); // 30일 21시 이전 -> getUserId()였음
+            setUserId(user.getUserId());
             setEmail(user.getEmail());
             setPassword(user.getPassword());
-//            setNickName(user.getNickName());
-//            setProFilePicture(user.getProFilePicture()); 로그인 검증에 사용하지 않는게 아닐까?
+            setNickName(user.getNickName());
+            setProFilePicture(user.getProFilePicture());
             setRoles(user.getRoles());
         }
 

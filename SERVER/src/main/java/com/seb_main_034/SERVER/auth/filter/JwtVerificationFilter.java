@@ -1,13 +1,16 @@
 package com.seb_main_034.SERVER.auth.filter;
 
 import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
+import com.seb_main_034.SERVER.auth.userdetails.UsersDetailsService;
 import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -25,6 +28,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래�
 
     private final JwtTokenizer jwtTokenizer;
     private final UsersAuthorityUtils authorityUtils;
+    private final UsersDetailsService usersDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -58,13 +62,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래�
         String authorization = request.getHeader("Authorization");
 
         //헤더의 값이 존재하지 않거나 Bearer로 시작하지 않으면 필터동작을 하지않음.
-        return authorization == null || !authorization.startsWith("Bearer");
+        return authorization == null;
     }
 
     private Map<String, Object> verifyJws(HttpServletRequest request) {
 
         // request의 헤더에서 jwt를 얻어내고, 엑세스 키를 생성할때 앞에 붙인 Bearer을 제거.
-        String jws = request.getHeader("Authorization").replace("Bearer ", "");
+        String jws = request.getHeader("Authorization");
 
         //서명을 검증하기 위한 비밀키를 얻어냄.
         String encodedBase64SecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
@@ -79,15 +83,16 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래�
 
         // 인증된 유저의 정보에서 email부분을 얻어냄. 생성시 email이란 key로 유저의 이메일을 부여했었음.
         String email = (String) claims.get("email");
+        UserDetails userDetails = usersDetailsService.loadUserByUsername(email);
 
         // 인능된 유저의 정보에서 roles부분을 얻어냄. 생성시 roles이란 key로 권한의 리스트를 부여했었음.
         List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List) claims.get("roles"));
 
         //둘을 통해 인증된 객체를 생성
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(email, null, authorities);
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
 
-        //SecurityContextHolder에 인증된 객체를 저장
-        SecurityContextHolder.getContext().setAuthentication(token);
+        //SecurityContextHolder에 인증된 객체를 저장 컨트롤러에서 @AuthenticationPrincipal 로 가져올 수 있게됨
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

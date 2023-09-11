@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = delegateRefreshToken(user);
 
         //response 헤더에 엑세스 토큰을 담아 보냄. 이후 클라이언트가 request 헤더에 추가해서 자격증명에 사용
-        response.setHeader("Authorization", "Bearer" + accessToken);
+        response.setHeader("Authorization", accessToken);
         response.setHeader("Refresh", refreshToken); // 필수적이지 않음. 제외할 수 있음.
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);

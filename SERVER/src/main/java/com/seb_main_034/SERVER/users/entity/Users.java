@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.users.entity;
 
+import com.seb_main_034.SERVER.comment.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,9 @@ public class Users {
     private String nickName;
 
     private String proFilePicture;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE) // 유저가 1, 댓글이 n 회원탈퇴를 해도 댓글은 남아있지만 누가 작성했는지는 null
+    private List<Comment> commentList = new ArrayList<Comment>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();

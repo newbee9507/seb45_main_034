@@ -9,6 +9,7 @@ public enum ExceptionCode {
     LOGIN_FAIL(401, "이메일 혹은 비밀번호가 잘못되었습니다."),
     UN_AUTHORITY(403,"접근 권한이 없습니다"),
     USER_NOT_FOUND(404, "회원을 찾을 수 없습니다"),
+    COMMENT_NOT_FOUND(404, "존재하지 않는 댓글입니다"),
     USER_EXISTS(409, "이미 존재하는 유저입니다"),
     NICKNAME_EXISTS(409, "이미 존재하는 닉네임입니다"),
     SERVER_ERROR(500, "잠시 후 다시 시도해주세요. 반복된다면 1:1 문의를 해 주시면 빠르게 해결해드리겠습니다."),

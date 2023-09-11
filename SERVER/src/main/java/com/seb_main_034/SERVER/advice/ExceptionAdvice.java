@@ -1,6 +1,6 @@
 package com.seb_main_034.SERVER.advice;
 
-import com.seb_main_034.SERVER.exception.UserException;
+import com.seb_main_034.SERVER.exception.GlobalException;
 import com.seb_main_034.SERVER.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionAdvice {
 
     @ExceptionHandler
-    public ResponseEntity UserException(UserException e) {
+    public ResponseEntity UserException(GlobalException e) {
 
         int status = e.getCode().getStatus();
 
@@ -34,7 +34,7 @@ public class ExceptionAdvice {
             return ResponseEntity.badRequest().body(message);
         }
 
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(fieldError);
     }
 
 }

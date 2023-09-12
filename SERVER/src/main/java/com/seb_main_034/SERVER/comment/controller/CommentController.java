@@ -41,12 +41,14 @@ public class CommentController {
 //    }
 
     @GetMapping("/all")
-    public ResponseEntity getComment() {
+    public ResponseEntity getComment(@PathVariable Long movieId) {
         CommentListResponseDto<List<CommentResponseDto>> listCommentListResponseDto =
-                new CommentListResponseDto<>(mapper.commentListToResponseListDto(service.getAllComment()));
+                new CommentListResponseDto<>(mapper.commentListToResponseListDto(service.getAllComment(movieId)));  // movieId를 추가함
 
         return new ResponseEntity(listCommentListResponseDto, HttpStatus.OK);
     }
+
+
 
     @PostMapping("/add")
     public ResponseEntity createComment(@PathVariable Long movieId, // 이 댓글이 어떤 영화에 쓰여진 댓글인지를 알아야하지 않을까?

@@ -1,7 +1,7 @@
 package com.seb_main_034.SERVER.movie.entity;
 
+import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.comment.entity.Comment;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,10 +13,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Movie {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long movieId;
@@ -25,14 +23,26 @@ public class Movie {
     private String title;
 
     @Column(nullable = false)
-    private String content;
-
-    @Column(nullable = false)
     private String description;
 
-    @Column
-    private Long vote = 0L;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private Users user;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE) // 영화가 1, 댓글이 n, 영화가 삭제되면 댓글도 삭제됨
-    private List<Comment> commentList = new ArrayList<Comment>();
+    @Column(nullable = true)
+    private double averageRating;
+
+    @Column(nullable = true)
+    private String genre;
+
+    @OneToMany(mappedBy = "movie")
+    private List<Comment> commentList = new ArrayList<>(); // 이 부분을 수정
+
+    private String streamingURL;
+
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
 }
+
+

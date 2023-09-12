@@ -1,22 +1,16 @@
 package com.seb_main_034.SERVER.movie.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.w3c.dom.Text;
 
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Id;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class MoviePostDto {
 
-    @NotBlank
     private String title;
 
-    @NotBlank
-    private String content;
-
-    @NotBlank
     private String description;
 }

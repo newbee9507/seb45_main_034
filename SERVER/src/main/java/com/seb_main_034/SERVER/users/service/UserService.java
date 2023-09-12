@@ -2,7 +2,7 @@ package com.seb_main_034.SERVER.users.service;
 
 import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import com.seb_main_034.SERVER.exception.ExceptionCode;
-import com.seb_main_034.SERVER.exception.GlobalException;
+import com.seb_main_034.SERVER.exception.UserException;
 import com.seb_main_034.SERVER.users.dto.PasswordDto;
 import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.entity.Users;
@@ -48,7 +48,7 @@ public class UserService {
         log.info("Service 호출 -> 업데이트");
         Users findUser = findById(userId);
         if (repository.findBynickName(userPatchDto.getNickName()).isPresent()) {
-            throw new GlobalException(ExceptionCode.NICKNAME_EXISTS);
+            throw new UserException(ExceptionCode.NICKNAME_EXISTS);
         }
         return repository.save(patchMapper.UserPatchDTOtoUser(findUser,userPatchDto));
     }
@@ -82,13 +82,13 @@ public class UserService {
 
     public Users findById(Long userId) {
         log.info("findById 호출");
-        return repository.findById(userId).orElseThrow(() -> new GlobalException(ExceptionCode.USER_NOT_FOUND));
+        return repository.findById(userId).orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
     }
 
     public Users findByEmail(String email) {
         log.info("이메일로 유저조회");
         Users findUser = repository.findByEmail(email).orElseThrow(
-                () -> new GlobalException(ExceptionCode.USER_NOT_FOUND));
+                () -> new UserException(ExceptionCode.USER_NOT_FOUND));
 
         return findUser;
     }
@@ -102,12 +102,12 @@ public class UserService {
 
         if (repository.findByEmail(email).isPresent()) {
             log.error("이미 존재하는 회원입니다.");
-            throw new GlobalException(ExceptionCode.USER_EXISTS);
+            throw new UserException(ExceptionCode.USER_EXISTS);
         }
 
         if (repository.findBynickName(nickName).isPresent()) {
             log.error("이미 존재하는 닉네임입니다.");
-            throw new GlobalException(ExceptionCode.NICKNAME_EXISTS);
+            throw new UserException(ExceptionCode.NICKNAME_EXISTS);
         }
         return true;
     }

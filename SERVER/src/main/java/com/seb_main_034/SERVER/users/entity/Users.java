@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.users.entity;
 
+import com.seb_main_034.SERVER.movie.entity.Movie;
 import com.seb_main_034.SERVER.comment.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,16 +34,28 @@ public class Users {
 
     private String proFilePicture;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE) // 유저가 1, 댓글이 n 회원탈퇴를 해도 댓글은 남아있지만 누가 작성했는지는 null
-    private List<Comment> commentList = new ArrayList<Comment>();
-
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
     public Users() {
     }
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> commentList = new ArrayList<>(); // 이 부분을 수정
+
+    // The recommendedMovies field is declared here. No need to declare it again.
+    @OneToMany(mappedBy = "user")
+    private List<Movie> recommendedMovies = new ArrayList<>();
+
+    public List<Movie> getRecommendedMovies() {
+        return recommendedMovies;
+    }
+
     public Users(String email) {
         this.email = email;
-    } // 소셜로그인시 필요함
+    } // For social login
+
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
 }

@@ -72,6 +72,7 @@ public class UserService {
      * 모든 유저조회를 만들다보니 이 목록에 관리자 계정은 들어있으면..
      * 일단은 목록에서 제외하고 반환하는걸로 작성함.
      */
+    @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
         log.info("findAllUsers 호출");
         List<Users> tmpList = repository.findAll();
@@ -80,11 +81,13 @@ public class UserService {
         return usersList;
     }
 
+    @Transactional(readOnly = true)
     public Users findById(Long userId) {
         log.info("findById 호출");
         return repository.findById(userId).orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
     public Users findByEmail(String email) {
         log.info("이메일로 유저조회");
         Users findUser = repository.findByEmail(email).orElseThrow(

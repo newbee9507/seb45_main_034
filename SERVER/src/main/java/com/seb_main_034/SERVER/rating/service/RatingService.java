@@ -11,9 +11,9 @@ public class RatingService {
     @Autowired
     private RatingRepository ratingRepository;
 
-    public Rating saveRating(RatingDTO ratingDTO) {
+    public Rating saveRating(RatingDTO ratingDTO, Long userId) {
         Rating rating = new Rating();
-        rating.setUserId(ratingDTO.getUserId());
+        rating.setUserId(userId);
         rating.setMovieId(ratingDTO.getMovieId());
         rating.setRating(ratingDTO.getRating());
         return ratingRepository.save(rating);

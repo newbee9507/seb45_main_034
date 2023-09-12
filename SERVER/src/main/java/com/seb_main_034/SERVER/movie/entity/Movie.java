@@ -35,7 +35,7 @@ public class Movie {
     @Column(nullable = true)
     private String genre;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>(); // 이 부분을 수정
 
     private String streamingURL;

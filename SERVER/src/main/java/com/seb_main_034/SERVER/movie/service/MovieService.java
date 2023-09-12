@@ -32,11 +32,16 @@ public class MovieService {
         Movie findMovie = findMovie(movie.getMovieId());
         Long findMovieUserId = findMovie.getUser().getUserId();
         if (findMovieUserId.equals(userId)) {
+            findMovie.setTitle(movie.getTitle());
             findMovie.setDescription(movie.getDescription());
             return movieRepository.save(findMovie);
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"이 영화를 수정할 권한이 없습니다.");
         }
+    }
+    //단일 영화 조회
+    public Movie viewMovie(Long movieId) {
+        return findMovie(movieId);
     }
 
     // 전체 글 조회
@@ -52,14 +57,14 @@ public class MovieService {
     }
 
     // 영화 정보 조회
-    public Movie findMovie(long movieId) {
+    public Movie findMovie(Long movieId) {
         Optional<Movie> optionalMovie = movieRepository.findById(movieId);
         return optionalMovie.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "영화를 찾을 수 없습니다."));
     }
 
 
     //게시글 작성자에 따른 전체 글 조회(관리자에 의한 필요?)
-    public Page<Movie> findUserMovies(int page, long userId) {
+    public Page<Movie> findUserMovies(int page, Long userId) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("movieId").descending());
         Page<Movie> findMovies = movieRepository.findByUserId(userId, pageable);
 

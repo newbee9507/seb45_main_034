@@ -13,6 +13,8 @@ public class MoviePatchDto {
 
     private String title;
 
+    private String genre;
+
     private String description;
 
 }

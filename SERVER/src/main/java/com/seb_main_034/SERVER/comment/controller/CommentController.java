@@ -27,7 +27,6 @@ public class CommentController {
     private final CommentService service;
     private final CommentMapper mapper;
 
-
 //    @GetMapping
 //    public Comment getComment() { // 필요한 기능인지는 의문. 하나의 질문만을 찾을 이유가 있을까..?
 //        service.getComment()
@@ -43,12 +42,10 @@ public class CommentController {
     @GetMapping("/all")
     public ResponseEntity getComment(@PathVariable Long movieId) {
         CommentListResponseDto<List<CommentResponseDto>> listCommentListResponseDto =
-                new CommentListResponseDto<>(mapper.commentListToResponseListDto(service.getAllComment(movieId)));  // movieId를 추가함
+                new CommentListResponseDto<>(mapper.commentListToResponseListDto(service.getAllComment(movieId)));
 
         return new ResponseEntity(listCommentListResponseDto, HttpStatus.OK);
     }
-
-
 
     @PostMapping("/add")
     public ResponseEntity createComment(@PathVariable Long movieId, // 이 댓글이 어떤 영화에 쓰여진 댓글인지를 알아야하지 않을까?
@@ -64,7 +61,7 @@ public class CommentController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{commentId}")
+    @PatchMapping("/update/{commentId}")
     public ResponseEntity updateComment(@PathVariable Long movieId,
                                         @PathVariable Long commentId,
                                         @Valid @RequestBody CommentUpdateDto updateDto,

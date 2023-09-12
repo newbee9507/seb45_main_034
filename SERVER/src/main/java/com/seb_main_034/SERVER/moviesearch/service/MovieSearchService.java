@@ -5,6 +5,7 @@ import com.seb_main_034.SERVER.moviesearch.repository.MovieSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,7 +16,20 @@ public class MovieSearchService {
     public List<String> searchMovies(MovieSearchDTO movieSearchDTO) {
         String keyword = movieSearchDTO.getKeyword();
         String field = movieSearchDTO.getField();
-        return movieSearchRepository.searchMoviesByField(keyword);
 
+        // keyword가 빈 문자열이거나 null인 경우 빈 리스트 반환
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        if ("title".equals(field)) {
+            return movieSearchRepository.searchMoviesByTitle(keyword);
+        } else if ("genre".equals(field)) {
+            return movieSearchRepository.searchMoviesByGenre(keyword);
+        } else {
+            // Fallback: Search both fields if 'field' is not specified or invalid.
+            return movieSearchRepository.searchMoviesByField(keyword);
+        }
     }
 }
+

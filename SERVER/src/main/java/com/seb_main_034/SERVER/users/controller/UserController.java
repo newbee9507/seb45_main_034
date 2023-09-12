@@ -28,7 +28,7 @@ public class UserController {
     private final UserMapper mapper;
     private final PatchMapper patchMapper;
 
-    @GetMapping("/info/user/{userId}") // 회원조회
+    @GetMapping("/info/{userId}") // 회원조회
     public ResponseEntity info(@PathVariable @Positive Long userId) {
         log.info("Controller 호출 -> 회원조회");
         Users findUser = service.findById(userId);
@@ -56,7 +56,7 @@ public class UserController {
         return new ResponseEntity<>(createResponseDto(savedUser), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{userId}") // 회원정보 수정 가입할 때 사진을 등록하지 않아도, 여기서 등록할 수 있음 비어있는걸 보내면 사용중이던 것 그대로 사용
+    @PatchMapping("/update/{userId}") // 회원정보 수정 가입할 때 사진을 등록하지 않아도, 여기서 등록할 수 있음 비어있는걸 보내면 사용중이던 것 그대로 사용
     public ResponseEntity update(@PathVariable @Positive Long userId,
                                  @Valid @RequestBody UserPatchDto userPatchDto) {
         log.info("Controller 호출 -> 회원정보 수정");
@@ -69,7 +69,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/password/{userId}") // 비밀번호 변경. 임시로 작성. 후에 로그인 되어있는지 확인하는 코드와 로그아웃 시키는 코드가 필요할듯?
+    @PatchMapping("/password/{userId}") // 비밀번호 변경. 임시로 작성. 후에 로그인 되어있는지 확인하는 코드와 로그아웃 시키는 코드가 필요할듯?
     public String updatePassword(@PathVariable Long userId,
                                  @Valid @RequestBody PasswordDto passwordDto) {
         log.info("Controller 호출 -> 비밀번호 수정");
@@ -89,13 +89,13 @@ public class UserController {
         return new ResponseEntity("삭제 완료", HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/all") // 테스트용 모두 삭제
-    public ResponseEntity deleteAll() {
-        log.info("Controller 호출 -> 전부 삭제");
-
-        service.deleteAll();
-        return new ResponseEntity("전부삭제 완료", HttpStatus.OK);
-    }
+//    @DeleteMapping("/delete/all") // 테스트용 모두 삭제
+//    public ResponseEntity deleteAll() {
+//        log.info("Controller 호출 -> 전부 삭제");
+//
+//        service.deleteAll();
+//        return new ResponseEntity("전부삭제 완료", HttpStatus.OK);
+//    }
     
     private UserResponseDto createResponseDto(Users user) {
         return mapper.UsertoUserResponseDto(user);

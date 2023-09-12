@@ -40,8 +40,8 @@ public class Users {
     public Users() {
     }
 
-    @OneToMany(mappedBy = "user")
-    private List<Comment> commentList = new ArrayList<>(); // 이 부분을 수정
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE) // 회원탈퇴시, 작성한 댓글도 삭제됨
+    private List<Comment> commentList = new ArrayList<Comment>();
 
     // The recommendedMovies field is declared here. No need to declare it again.
     @OneToMany(mappedBy = "user")

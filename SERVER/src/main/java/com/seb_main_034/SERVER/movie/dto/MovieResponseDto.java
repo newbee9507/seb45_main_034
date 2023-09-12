@@ -11,6 +11,8 @@ public class MovieResponseDto {
 
     private String title;
 
+    private String genre;
+
     private String description;
 
 }

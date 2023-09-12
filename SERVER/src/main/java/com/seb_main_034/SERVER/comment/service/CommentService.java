@@ -10,17 +10,20 @@ import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
 
     private final CommentRepository repository;
     private final MovieService movieService;
 
+    @Transactional(readOnly = true)
     public List<Comment> getAllComment(Long movieId) {
         Movie movie = movieService.findMovie(movieId); // 수정된 부분
         return movie.getCommentList();  // 해당 영화의 모든 댓글들을 가져옴
@@ -55,6 +58,7 @@ public class CommentService {
         repository.delete(findComment);
     }
 
+    @Transactional(readOnly = true)
     public Comment findById(Long commentId) {
         return repository.findById(commentId).orElseThrow(
                 () -> new GlobalException(ExceptionCode.COMMENT_NOT_FOUND));

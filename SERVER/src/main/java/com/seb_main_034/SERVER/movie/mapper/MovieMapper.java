@@ -21,8 +21,9 @@ public interface MovieMapper {
             movieResponseDto.setMovieId(movie.getMovieId());
         }
         movieResponseDto.setTitle(movie.getTitle());
+        movieResponseDto.setGenre(movie.getGenre()); // 추가
         movieResponseDto.setDescription(movie.getDescription());
-        // 댓글부분예시: List<CommentDto.Response> commentResponse = movie.getComment().stream().map()
+
         return movieResponseDto;
     }
 

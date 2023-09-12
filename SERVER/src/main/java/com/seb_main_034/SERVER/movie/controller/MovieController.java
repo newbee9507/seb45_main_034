@@ -1,15 +1,19 @@
 package com.seb_main_034.SERVER.movie.controller;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.seb_main_034.SERVER.movie.dto.MoviePatchDto;
 import com.seb_main_034.SERVER.movie.dto.MoviePostDto;
 import com.seb_main_034.SERVER.movie.dto.MovieResponseDto;
 import com.seb_main_034.SERVER.movie.entity.Movie;
 import com.seb_main_034.SERVER.movie.mapper.MovieMapper;
 import com.seb_main_034.SERVER.movie.service.MovieService;
+import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/movies")
 @Validated
@@ -28,25 +33,25 @@ public class MovieController {
     //영화 정보 등록
     @PostMapping
     public ResponseEntity postMovie(@Valid @RequestBody MoviePostDto moviePostDto,
-                                    @RequestHeader("userId") Long userId) {
-        Movie movie = movieService.createMovie(movieMapper.moviePostDtoToMovie(moviePostDto), userId);
+                                    @AuthenticationPrincipal Users user) { // Long userId(X) 에서 수정했습니다
+        Movie movie = movieService.createMovie(movieMapper.moviePostDtoToMovie(moviePostDto), user.getUserId());
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     //영화 정보 수정
-    @PatchMapping("/{movie-id}")
-    public ResponseEntity patchMovie(@PathVariable("movie-id") @Positive long movieId,
-                                     @Positive long userId,
+    @PatchMapping("/{movieId}")
+    public ResponseEntity patchMovie(@PathVariable @Positive long movieId,
+                                     @AuthenticationPrincipal Users user,
                                      @Valid @RequestBody MoviePatchDto moviePatchDto) {
         moviePatchDto.setMovieId(movieId);
-        Movie movie = movieService.updateMovie(movieMapper.moviePatchDtoToMovie(moviePatchDto), userId);
+        Movie movie = movieService.updateMovie(movieMapper.moviePatchDtoToMovie(moviePatchDto), user.getUserId());
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //전체 영화 조회
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity getMovies(@Positive @RequestParam int page,
                                     @Positive @RequestParam int size) {
         Page<Movie> moviePage = movieService.findMovies(page - 1, size);
@@ -55,6 +60,16 @@ public class MovieController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    //단일 영화 조회
+    @GetMapping("/{movieId}")
+    public ResponseEntity viewMovie(@PathVariable @Positive Long movieId) {
+        Movie movie = movieService.findMovie(movieId);
+        MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     // 평점 상위 영화 10개 조회
     @GetMapping("/movieTop10")
@@ -68,10 +83,10 @@ public class MovieController {
 
 
     //영화 정보 삭제
-    @DeleteMapping("/{movie-id}")
-    public ResponseEntity deleteMovie(@PathVariable("movie-id") @Positive long movieId,
-                                      @Positive long userId) {
-        movieService.deleteMovie(movieId, userId);
+    @DeleteMapping("/{movieId}")
+    public ResponseEntity deleteMovie(@PathVariable @Positive long movieId,
+                                      @AuthenticationPrincipal Users user) {
+        movieService.deleteMovie(movieId, user.getUserId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

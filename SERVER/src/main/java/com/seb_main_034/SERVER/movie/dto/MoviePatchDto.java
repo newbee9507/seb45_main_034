@@ -15,6 +15,8 @@ public class MoviePatchDto {
 
     private String genre;
 
+    private String streamingURL;
+
     private String description;
 
 }

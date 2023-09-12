@@ -22,6 +22,7 @@ public interface MovieMapper {
         }
         movieResponseDto.setTitle(movie.getTitle());
         movieResponseDto.setGenre(movie.getGenre()); // 추가
+        movieResponseDto.setStreamingURL(movie.getStreamingURL());
         movieResponseDto.setDescription(movie.getDescription());
 
         return movieResponseDto;

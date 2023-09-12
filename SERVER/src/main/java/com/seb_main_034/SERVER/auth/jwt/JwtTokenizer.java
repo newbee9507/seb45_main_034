@@ -20,12 +20,15 @@ import java.util.Map;
 public class JwtTokenizer {
 
     @Getter
+    @Value("${jwt.key}")
     private String secretKey = "awfnehjfuwifnow3ufapsduf2p3894enj"; // JWT 생성 및 검증에 사용되는 비밀키 정보.
 
     @Getter
+    @Value("${jwt.access-token-life-time}")
     private int accessTokenLifeTime = 30; // accessToken 만료시간 정보
 
     @Getter
+    @Value("${jwt.refresh-token-life-time}")
     private int refreshTokenLifeTime = 420; // refreshToken 만료시간 정보
 
     // 비밀키를 암호화해 생성

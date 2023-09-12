@@ -13,6 +13,8 @@ public class MovieResponseDto {
 
     private String genre;
 
+    private String streamingURL;
+
     private String description;
 
 }

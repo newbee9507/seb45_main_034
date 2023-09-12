@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MovieCommentResponseDto<T> {
+public class MovieCommentResponseDto<T, U> {
 
     private T movieResponseDto;
-    private T commentList;
+    private U commentList;
 }

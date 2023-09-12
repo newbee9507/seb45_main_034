@@ -33,6 +33,8 @@ public class MovieService {
         Long findMovieUserId = findMovie.getUser().getUserId();
         if (findMovieUserId.equals(userId)) {
             findMovie.setTitle(movie.getTitle());
+            findMovie.setGenre(movie.getGenre());
+            findMovie.setStreamingURL(movie.getStreamingURL());
             findMovie.setDescription(movie.getDescription());
             return movieRepository.save(findMovie);
         } else {

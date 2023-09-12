@@ -1,6 +1,10 @@
 package com.seb_main_034.SERVER.movie.controller;
 
 import com.amazonaws.services.dynamodbv2.xspec.L;
+import com.seb_main_034.SERVER.comment.dto.CommentResponseDto;
+import com.seb_main_034.SERVER.comment.entity.Comment;
+import com.seb_main_034.SERVER.comment.mapper.CommentMapper;
+import com.seb_main_034.SERVER.movie.dto.MovieCommentResponseDto;
 import com.seb_main_034.SERVER.movie.dto.MoviePatchDto;
 import com.seb_main_034.SERVER.movie.dto.MoviePostDto;
 import com.seb_main_034.SERVER.movie.dto.MovieResponseDto;
@@ -29,6 +33,8 @@ import java.util.List;
 public class MovieController {
     private final MovieService movieService;
     private final MovieMapper movieMapper;
+    private final CommentMapper commentMapper;
+
 
     //영화 정보 등록
     @PostMapping
@@ -64,10 +70,14 @@ public class MovieController {
     //단일 영화 조회
     @GetMapping("/{movieId}")
     public ResponseEntity viewMovie(@PathVariable @Positive Long movieId) {
-        Movie movie = movieService.findMovie(movieId);
-        MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
+        Movie movie = movieService.findMovie(movieId); // 영화정보를 가져옴
+        List<Comment> commentList = movie.getCommentList(); // 해당영화에 대한 댓글목록을 가져옴
+        List<CommentResponseDto> commentResponseDto = commentMapper.commentListToResponseListDto(commentList);
+        MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie); // 영화 entity를 Dto로 변환함
+        MovieCommentResponseDto< MovieResponseDto, List<CommentResponseDto> > movieCommentResponseDto
+                = new MovieCommentResponseDto<>(response, commentResponseDto);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(movieCommentResponseDto, HttpStatus.OK);
     }
 
 

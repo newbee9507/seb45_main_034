@@ -11,5 +11,7 @@ public class MoviePostDto {
 
     private String genre;
 
+    private String streamingURL;
+
     private String description;
 }

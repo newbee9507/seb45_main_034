@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/movie-search")
 public class MovieSearchController {
+
     @Autowired
     private MovieSearchService movieSearchService;
 

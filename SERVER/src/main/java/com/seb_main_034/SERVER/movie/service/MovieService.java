@@ -91,7 +91,7 @@ public class MovieService {
 
     // 10개의 영화 출력, 검색기능 구현
     public Page<Movie> findKeyWordMovies(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("movieId").descending());
+        Pageable pageable = PageRequest.of(page-1, 10, Sort.by("movieId").descending());
 
         return movieRepository.findByKeyWordMovie(keyword, pageable);
     }

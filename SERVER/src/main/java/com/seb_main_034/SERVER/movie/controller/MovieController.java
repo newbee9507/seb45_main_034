@@ -106,8 +106,8 @@ public class MovieController {
     }
 
     //영화 키워드를 통한 쿼리문 검색
-    @GetMapping("/search/key-word")
-    public ResponseEntity getSearchMovie(@RequestParam(value = "key-word" ) String keyWord,
+    @GetMapping("/search")
+    public ResponseEntity getSearchMovie(@RequestParam String keyWord,
                                          @Positive int page) {
         Page<Movie> moviePage = movieService.findKeyWordMovies(keyWord, page);
         List<Movie> movies = moviePage.getContent();

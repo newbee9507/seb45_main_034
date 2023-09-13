@@ -19,14 +19,17 @@ public class RecommendationService {
     private final UserRepository userRepository;
     private final MovieMapper movieMapper;
 
-    public List<MovieResponseDto> recommendMovies(Long userId) {
+    public List<MovieResponseDto> recommendMoviesBasedOnUserGenre(Long userId) {
         Users user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
+        List<Movie> recommendedMovies = movieRecommendationAlgorithm.recommendMoviesBasedOnUserGenre(user);
+        return movieMapper.toResponseDtos(recommendedMovies);
+    }
 
-        List<Movie> recommendedMovies = movieRecommendationAlgorithm.recommendMovies(user);
-        List<MovieResponseDto> recommendedMovieDTOs = movieMapper.toResponseDtos(recommendedMovies);
-        return recommendedMovieDTOs;
+    public List<MovieResponseDto> recommendTopRatedMovies() {
+        List<Movie> recommendedMovies = movieRecommendationAlgorithm.recommendTopRatedMovies();
+        return movieMapper.toResponseDtos(recommendedMovies);
     }
 }

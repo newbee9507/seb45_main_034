@@ -32,20 +32,13 @@ public class CommentController {
 //        service.getComment()
 //    }
 
-//    @GetMapping("/{movieId}") // 해당 Id를 가진 영화에 한정해서, 등록된 모든 댓글을 가져옴. 그런데 이거보다 영화컨트롤러에서 함께 반환하는게 맞지 않을까?
-//    public ResponseEntity getAllComment(@PathVariable Long movieId) {
+//    @GetMapping("/all") // 해당 Id를 가진 영화에 한정해서, 등록된 모든 댓글을 가져옴. 그런데 이거보다 영화컨트롤러에서 함께 반환하는게 맞지 않을까?
+//    public ResponseEntity getComment(@PathVariable Long movieId) {
+//        CommentListResponseDto<List<CommentResponseDto>> listCommentListResponseDto =
+//                new CommentListResponseDto<>(mapper.commentListToResponseListDto(service.getAllComment(movieId)));
 //
-//        List<Comment> allComment = service.getAllComment(movieId);
-//        return new ResponseEntity<>(allComment, HttpStatus.OK);
+//        return new ResponseEntity(listCommentListResponseDto, HttpStatus.OK);
 //    }
-
-    @GetMapping("/all")
-    public ResponseEntity getComment(@PathVariable Long movieId) {
-        CommentListResponseDto<List<CommentResponseDto>> listCommentListResponseDto =
-                new CommentListResponseDto<>(mapper.commentListToResponseListDto(service.getAllComment(movieId)));
-
-        return new ResponseEntity(listCommentListResponseDto, HttpStatus.OK);
-    }
 
     @PostMapping("/add")
     public ResponseEntity createComment(@PathVariable Long movieId, // 이 댓글이 어떤 영화에 쓰여진 댓글인지를 알아야하지 않을까?

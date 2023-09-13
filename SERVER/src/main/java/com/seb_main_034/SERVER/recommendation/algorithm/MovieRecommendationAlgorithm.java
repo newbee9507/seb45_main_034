@@ -1,9 +1,7 @@
 package com.seb_main_034.SERVER.recommendation.algorithm;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.seb_main_034.SERVER.movie.entity.Movie;
 import com.seb_main_034.SERVER.movie.repository.MovieRepository;
@@ -18,27 +16,25 @@ public class MovieRecommendationAlgorithm {
     @Autowired
     private MovieRepository movieRepository;
 
-    public List<Movie> recommendMovies(Users user) {
+    public List<Movie> recommendMoviesBasedOnUserGenre(Users user) {
         List<Movie> recommendedMovies = new ArrayList<>();
-
-        List<Movie> previouslyRecommendedMovies = user.getRecommendedMovies();
-
         Set<String> highRatedGenres = new HashSet<>();
-        for (Movie movie : previouslyRecommendedMovies) {
+        for (Movie movie : user.getRecommendedMovies()) {
             if (movie.getAverageRating() >= 4.0) {
                 highRatedGenres.add(movie.getGenre());
             }
         }
-
-        // Add movies of high-rated genres to the recommended list
         for (String genre : highRatedGenres) {
             recommendedMovies.addAll(movieRepository.findByGenre(genre));
         }
-
-        // Add globally high-rated movies to the recommended list
-        List<Movie> highRatedMovies = movieRepository.findByAverageRatingGreaterThanEqual(4.0);
-        recommendedMovies.addAll(highRatedMovies);
-
         return recommendedMovies;
+    }
+
+    public List<Movie> recommendTopRatedMovies() {
+        List<Movie> highRatedMovies = movieRepository.findByAverageRatingGreaterThanEqual(4.0);
+        return highRatedMovies.stream()
+                .sorted(Comparator.comparingDouble(Movie::getAverageRating).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
     }
 }

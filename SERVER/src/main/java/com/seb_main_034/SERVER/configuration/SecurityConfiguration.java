@@ -33,7 +33,6 @@ public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
     private final UsersAuthorityUtils authorityUtils;
-    private final UserService userService;
     private final UsersDetailsService usersDetailsService;
 
     @Bean
@@ -54,15 +53,25 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->authorize
-//                        .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
-//                        .antMatchers(HttpMethod.PUT, "/api/users/**").hasRole("USER") // 회원은 자신의 정보조회 및 수정탈퇴에 접근가능
-//                        .antMatchers(HttpMethod.GET, "/api/users/info/user/**").hasAnyRole("USER", "ADMIN") // 관리자와 회원은 자신의 정보를 열람할 수 있음
-//                        .antMatchers("/api/users/info/all").hasRole("ADMIN") // 관리자는 모든회원 목록을 열람할 수 있음
-//                        .antMatchers(HttpMethod.GET, "api/movies").permitAll() // 비회원은 영회목록조회만 가능 태그가붙으면 주소가 바뀌는지 생각해봐야 함
-//                        .antMatchers(HttpMethod.GET, "/api/movies/**").hasRole("USER") // 일반유저는 영화목록조회 및 감상만 가능
-//                        .antMatchers("/api/**").hasRole("ADMIN")) // 관리자는 모든 uri 접근가능
-                        .antMatchers(HttpMethod.GET, "/api/users/info/all").hasRole("ADMIN") // 테스트용, 관리자만 모든회원 목록을 조회
-                        .antMatchers("/api/**").permitAll()); // 테스트용. 모든 기능 가능
+                        .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
+                        .antMatchers(HttpMethod.PATCH, "/api/users/update/**").hasAnyRole("USER", "ADMIN") // 회원과 관리자는 회원정보 수정에 접근가능
+                        .antMatchers(HttpMethod.PATCH, "/api/users/password/**").hasRole("USER") // 회원만 비밀번호 변경가능
+                        .antMatchers(HttpMethod.DELETE, "/api/users/delete/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/api/users/info/**").hasAnyRole("USER", "ADMIN") // 관리자와 회원은 회원정보를 열람할 수 있음
+                        .antMatchers(HttpMethod.GET,"/api/users/info/all").hasRole("ADMIN") // 관리자는 모든회원 목록을 열람할 수 있음
+                        .antMatchers(HttpMethod.POST, "/api/ratings").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/api/movies/all").permitAll() // 비회원은 영회목록조회만 가능 태그가붙으면 주소가 바뀌는지 생각해봐야 함
+                        .antMatchers(HttpMethod.POST, "/api/movies").hasRole("ADMIN") // 영화 등록은 관리자만 가능
+                        .antMatchers(HttpMethod.PATCH, "/api/movies/**").hasRole("ADMIN") // 영화수정은 관리자만 가능
+                        .antMatchers(HttpMethod.DELETE, "/api/movies/**").hasRole("ADMIN") // 영화삭제는 관리자만 가능
+                        .antMatchers(HttpMethod.GET, "/api/movies/**").hasAnyRole("USER", "ADMIN") // 회원이면 영화감상 가능
+                        .antMatchers(HttpMethod.GET, "/api/movies/recommendations/user/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/api/movies/recommendations/top-rated").permitAll() //누구나 상위 평점 4점이상 영화목록을 조회 가능
+                        .antMatchers(HttpMethod.GET, "/api/movies/search/**").permitAll() // 누구나 영화 검색은 가능
+                        .antMatchers(HttpMethod.POST, "/api/comment/**").hasAnyRole("USER", "ADMIN") // 댓글은 비회원은 작성불가
+                        .antMatchers(HttpMethod.PATCH, "/api/comment/**").hasRole("USER") // 댓글수정은 회원만 가능
+                        .antMatchers(HttpMethod.DELETE, "/api/comment/**").hasAnyRole("USER", "ADMIN") // 댓글삭제는 비회원만 불가능
+                        .antMatchers("/api/**").permitAll()); // 제한이 걸리지 않은 기능은 모두 사용가능
 //                        .oauth2Login(oauth2 -> oauth2.successHandler(
 //                                new OAuth2SuccessHandler(jwtTokenizer, authorityUtils, userService)));
 

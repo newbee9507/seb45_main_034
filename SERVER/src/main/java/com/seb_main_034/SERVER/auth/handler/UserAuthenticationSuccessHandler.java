@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -24,12 +25,12 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         ObjectMapper objectMapper = new ObjectMapper();
         Users principal = (Users) authentication.getPrincipal();
-        String nickName = principal.getNickName();
+        List<String> roles = principal.getRoles();
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), nickName);
+        objectMapper.writeValue(response.getWriter(), roles);
 
         log.info("{} 회원 로그인 성공", principal);
 

@@ -17,6 +17,8 @@ public class MoviePatchDto {
 
     private String streamingURL;
 
+    private String previewPicture;
+
     private String description;
 
 }

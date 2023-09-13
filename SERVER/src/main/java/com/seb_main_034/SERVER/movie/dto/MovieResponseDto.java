@@ -15,6 +15,8 @@ public class MovieResponseDto {
 
     private String streamingURL;
 
+    private String previewPicture;
+
     private String description;
 
 }

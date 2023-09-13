@@ -13,5 +13,7 @@ public class MoviePostDto {
 
     private String streamingURL;
 
+    private String previewPicture;
+
     private String description;
 }

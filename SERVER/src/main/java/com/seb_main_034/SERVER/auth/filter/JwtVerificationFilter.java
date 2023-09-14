@@ -30,6 +30,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래�
     private final UsersAuthorityUtils authorityUtils;
     private final UsersDetailsService usersDetailsService;
 
+    private final String bea = "Bearer ";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -62,14 +64,14 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래�
         String authorization = request.getHeader("Authorization");
 
         //헤더의 값이 존재하지 않거나 Bearer로 시작하지 않으면 필터동작을 하지않음.
-        return authorization == null;
+        return authorization == null || !authorization.startsWith(bea);
     }
 
     private Map<String, Object> verifyJws(HttpServletRequest request) {
 
         // request의 헤더에서 jwt를 얻어내고, 엑세스 키를 생성할때 앞에 붙인 Bearer을 제거.
-        String jws = request.getHeader("Authorization");
-
+        String jws = request.getHeader("Authorization").replace(bea,"");
+        log.info("authorization = {}", jws);
         //서명을 검증하기 위한 비밀키를 얻어냄.
         String encodedBase64SecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 

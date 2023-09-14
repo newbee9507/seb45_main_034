@@ -29,6 +29,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager; // UserDetailsService에게 클라이언트가 보낸 토큰으로 검색요청(?) 보낼거라 예상
     private final JwtTokenizer jwtTokenizer;
 
+    private final String bea = "Bearer ";
+
     @SneakyThrows // 발생할 수 있는 예외를 명시하지 않아도 되도록 해줌. 에러발생시 런타임 예외로 래핑해줌 단순히 코드를 간결하게 해주는 용도
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -58,7 +60,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String refreshToken = delegateRefreshToken(user);
 
         //response 헤더에 엑세스 토큰을 담아 보냄. 이후 클라이언트가 request 헤더에 추가해서 자격증명에 사용
-        response.setHeader("Authorization", accessToken);
+        response.setHeader("Authorization", bea + accessToken);
         response.setHeader("Refresh", refreshToken); // 필수적이지 않음. 제외할 수 있음.
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);

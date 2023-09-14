@@ -22,16 +22,9 @@ public class ErrorResponse {
         return new ErrorResponse(status, message);
     }
 
-    public static ErrorResponse sendErrorResponse(HttpStatus httpStatus) {
-        int status = httpStatus.value();
-        String message = ExceptionCode.SERVER_ERROR.getMessage();
-
-        for (ExceptionCode code : ExceptionCode.values()) {
-            if (code.getStatus() == status) {
-                message = code.getMessage();
-                break;
-            }
-        }
+    public static ErrorResponse sendErrorResponse(ExceptionCode code) {
+        int status = code.getStatus();
+        String message = code.getMessage();
 
         return new ErrorResponse(status, message);
     }

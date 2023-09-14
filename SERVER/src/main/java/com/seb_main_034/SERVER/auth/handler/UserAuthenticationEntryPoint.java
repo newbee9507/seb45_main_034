@@ -1,6 +1,7 @@
 package com.seb_main_034.SERVER.auth.handler;
 
 import com.seb_main_034.SERVER.auth.utils.ErrorResponder;
+import com.seb_main_034.SERVER.exception.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -23,8 +24,7 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         // 검증필터에서 발생한 예외를 여기서 받음. 저장할 때 exception으로 저장했었음.
         Exception exception = (Exception) request.getAttribute("exception");
-        log.info("예외 = {}", exception.getClass());
-        ErrorResponder.sendErrorResponse(response, HttpStatus.UNAUTHORIZED);
+        ErrorResponder.sendErrorResponse(response, ExceptionCode.UN_AUTHORITY);
 
         logExceptionMessage(authException, exception);
     }

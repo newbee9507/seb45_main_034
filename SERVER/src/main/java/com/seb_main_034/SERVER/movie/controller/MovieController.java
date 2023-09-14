@@ -109,7 +109,16 @@ public class MovieController {
     @GetMapping("/search")
     public ResponseEntity getSearchMovie(@RequestParam String keyWord,
                                          @Positive int page) {
+        if (keyWord.isEmpty()) {
+            return new ResponseEntity<>("검색어를 입력하세요", HttpStatus.BAD_REQUEST);
+        }
+
         Page<Movie> moviePage = movieService.findKeyWordMovies(keyWord, page);
+
+        if (moviePage.isEmpty()) {
+            return new ResponseEntity<>("해당 영화를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+
         List<Movie> movies = moviePage.getContent();
         List<MovieResponseDto> response = movieMapper.movieToMovieResponseDto(movies);
 

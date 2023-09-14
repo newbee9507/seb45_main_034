@@ -18,4 +18,6 @@ public class MovieSearchController {
     public List<String> searchMovies(@RequestBody MovieSearchDTO movieSearchDTO) {
         return movieSearchService.searchMovies(movieSearchDTO);
     }
+
+
 }

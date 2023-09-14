@@ -1,6 +1,7 @@
 package com.seb_main_034.SERVER.auth.handler;
 
 import com.seb_main_034.SERVER.auth.utils.ErrorResponder;
+import com.seb_main_034.SERVER.exception.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,7 +22,7 @@ public class UserAccessDeniedHandler implements AccessDeniedHandler {
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
-        ErrorResponder.sendErrorResponse(response, HttpStatus.FORBIDDEN);
+        ErrorResponder.sendErrorResponse(response, ExceptionCode.FORBIDDEN);
 
     }
 }

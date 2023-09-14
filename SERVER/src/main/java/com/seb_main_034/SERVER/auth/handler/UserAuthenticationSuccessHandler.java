@@ -1,6 +1,7 @@
 package com.seb_main_034.SERVER.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seb_main_034.SERVER.auth.dto.LoginSuccessResponseDto;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import java.util.List;
 @Slf4j
 public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
+    private final String isUser = "USER";
+    private final String isAdmin = "ADMIN";
+
     // 인증에 성공했을시.
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -25,14 +29,19 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         ObjectMapper objectMapper = new ObjectMapper();
         Users principal = (Users) authentication.getPrincipal();
-        List<String> roles = principal.getRoles();
+
+        String userEmail = principal.getEmail();
+        String Role = isUser;
+        if (principal.getRoles().contains("ADMIN")) {
+            Role = isAdmin;
+        }
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), roles);
+        objectMapper.writeValue(response.getWriter(), new LoginSuccessResponseDto(userEmail, Role));
 
-        log.info("{} 회원 로그인 성공", principal);
+        log.info("{} 회원 로그인 성공", principal.getNickName());
 
     }
 }

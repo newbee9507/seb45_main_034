@@ -3,6 +3,7 @@ package com.seb_main_034.SERVER.movie.mapper;
 import com.seb_main_034.SERVER.movie.dto.*;
 import com.seb_main_034.SERVER.movie.entity.Movie;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public interface MovieMapper {
 
     Movie moviePatchDtoToMovie(MoviePatchDto moviePatchDto);
+
     Movie moviePostDtoToMovie(MoviePostDto moviePostDto);
 
     default MovieResponseDto movieToMovieResponseDto(Movie movie) {

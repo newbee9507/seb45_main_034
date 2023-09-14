@@ -37,9 +37,6 @@ public class Users {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-    public Users() {
-    }
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE) // 회원탈퇴시, 작성한 댓글도 삭제됨
     private List<Comment> commentList = new ArrayList<Comment>();
 
@@ -51,11 +48,14 @@ public class Users {
         return recommendedMovies;
     }
 
-    public Users(String email) {
-        this.email = email;
-    } // For social login
-
     public List<Comment> getCommentList() {
         return commentList;
     }
+
+    public Users() {
+    }
+
+    public Users(String email) {
+        this.email = email;
+    } // For social login
 }

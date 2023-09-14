@@ -22,7 +22,7 @@ public class Movie {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String description;
 
     @ManyToOne
@@ -38,10 +38,11 @@ public class Movie {
     @Column
     private String previewPicture;
 
+    @Column
+    private String streamingURL;
+
     @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>(); // 이 부분을 수정
-
-    private String streamingURL;
 
     public List<Comment> getCommentList() {
         return commentList;

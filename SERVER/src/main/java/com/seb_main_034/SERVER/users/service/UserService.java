@@ -29,7 +29,7 @@ public class UserService {
     private final UsersAuthorityUtils authorityUtils; // 권한 설정을 위한 클래스
 
     public Users save(Users user) {
-        log.info("Service 호출 -> 저장");
+
         if (checkEmail(user.getEmail(), user.getNickName())) { // 이미 서버에 존재하는 이메일인지 확인
             user.setPassword(encoder.encode(user.getPassword())); // 비밀번호 암호화
             List<String> roles = authorityUtils.createRoles(user.getEmail()); // 권한 설정
@@ -45,7 +45,7 @@ public class UserService {
     }
 
     public Users update(Long userId, UserPatchDto userPatchDto) {
-        log.info("Service 호출 -> 업데이트");
+        log.info("업데이트 요청 회원의 Id = {}", userId);
         Users findUser = findById(userId);
         if (repository.findBynickName(userPatchDto.getNickName()).isPresent()) {
             throw new UserException(ExceptionCode.NICKNAME_EXISTS);
@@ -54,12 +54,12 @@ public class UserService {
     }
 
     public void delete(Users user) {
-        log.info("Service 호출 -> 삭제");
+        log.info("삭제되는 회원의 이메일 = {}", user.getEmail());
         repository.delete(user);
     }
 
     public void changePw(Long userId, PasswordDto passwordDto) {
-        log.info("Service 호출 -> 비밀번호 변경");
+        log.info("업데이트 요청 회원의 Id = {}", userId);
         Users findUser = findById(userId);
         String encodePw = encoder.encode(passwordDto.getPassword());// 바꾸길 원하는 비밀번호 암호화 및 재설정
         findUser.setPassword(encodePw);
@@ -74,7 +74,6 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
-        log.info("findAllUsers 호출");
         List<Users> tmpList = repository.findAll();
         List<Users> usersList = deleteAdmin(tmpList);
 
@@ -83,13 +82,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Users findById(Long userId) {
-        log.info("findById 호출");
+        log.info("찾을 회원의 Id = {}", userId);
         return repository.findById(userId).orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public Users findByEmail(String email) {
-        log.info("이메일로 유저조회");
+        log.info("회원조회에 사용될 이메일 = {}", email);
         Users findUser = repository.findByEmail(email).orElseThrow(
                 () -> new UserException(ExceptionCode.USER_NOT_FOUND));
 
@@ -104,20 +103,15 @@ public class UserService {
         log.info("이메일과 닉네임 체크");
 
         if (repository.findByEmail(email).isPresent()) {
-            log.error("이미 존재하는 회원입니다.");
+            log.error("중복된 이메일 요청 = {}", email);
             throw new UserException(ExceptionCode.USER_EXISTS);
         }
 
         if (repository.findBynickName(nickName).isPresent()) {
-            log.error("이미 존재하는 닉네임입니다.");
+            log.error("중복된 닉네임 요청 = {}", nickName);
             throw new UserException(ExceptionCode.NICKNAME_EXISTS);
         }
         return true;
-    }
-
-    public void deleteAll() {
-        log.info("Service 호출 -> 전부 삭제");
-        repository.deleteAll();
     }
 
     public List<Users> deleteAdmin(List<Users> usersList) {

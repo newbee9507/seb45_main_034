@@ -37,12 +37,13 @@ public class CommentService {
 
         user.getCommentList().add(comment);
         movie.getCommentList().add(comment);
-
+        log.info("영화ID = {} , 작성자ID = {}", movie.getMovieId(), user.getUserId());
         return repository.save(comment);
     }
 
     public Comment update(Comment comment, Users user, Long commentId, Long movieId) {
         Comment wantUpdateComment = findById(commentId);
+        log.info("수정요청한 댓글ID = {}", wantUpdateComment.getCommentId());
         if (verifyUser(wantUpdateComment, user, movieId)) {
             wantUpdateComment.setText(comment.getText());
             return repository.save(wantUpdateComment);
@@ -72,8 +73,7 @@ public class CommentService {
         Long wantUpdateMovieId = comment.getMovie().getMovieId();
         Movie movie = movieService.findMovie(movieId);
 
-        log.info("user.getId = {}, comment.getUserid = {}, wantUpdateMovieId = {}, movie.getId = {}",
-                user.getUserId(), comment.getUser().getUserId(), wantUpdateMovieId, movie.getMovieId());
+        log.info("본인의 댓글인지 검증");
 
         if (user.getRoles().contains("ADMIN") && wantUpdateMovieId.equals(movie.getMovieId())) {
             return true;

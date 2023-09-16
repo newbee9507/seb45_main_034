@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -74,26 +75,15 @@ public class MovieController {
     public ResponseEntity viewMovie(@PathVariable @Positive Long movieId) {
         Movie movie = movieService.findMovie(movieId); // 영화정보를 가져옴
         List<Comment> commentList = movie.getCommentList(); // 해당영화에 대한 댓글목록을 가져옴
+        commentList.sort(Comparator.comparing(Comment::getCreateAt));
+
         List<CommentResponseDto> commentResponseDto = commentMapper.commentListToResponseListDto(commentList);
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie); // 영화 entity를 Dto로 변환함
+
         MovieCommentResponseDto< MovieResponseDto, List<CommentResponseDto> > movieCommentResponseDto
                 = new MovieCommentResponseDto<>(response, commentResponseDto);
 
         return new ResponseEntity<>(movieCommentResponseDto, HttpStatus.OK);
-    }
-
-    //사용자 선호 장르 영화 추천
-    @GetMapping("/recommendations/user/{userId}")
-    public ResponseEntity<List<MovieResponseDto>> getUserBasedRecommendations(@PathVariable Long userId) {
-        List<MovieResponseDto> response = recommendationService.recommendMoviesBasedOnUserGenre(userId);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    //상위 평점 4점이상 영화 추천
-    @GetMapping("/recommendations/top-rated")
-    public ResponseEntity<List<MovieResponseDto>> getTopRatedRecommendations() {
-        List<MovieResponseDto> response = recommendationService.recommendTopRatedMovies();
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //영화 정보 삭제
@@ -104,6 +94,21 @@ public class MovieController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    //사용자 선호 장르 영화 추천
+    @GetMapping("/recommendations/user/{userId}")
+    public ResponseEntity<List<MovieResponseDto>> getUserBasedRecommendations(@PathVariable Long userId) {
+        List<MovieResponseDto> response = recommendationService.recommendMoviesBasedOnUserGenre(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    //상위 평점 4점이상 영화 추천
+
+    @GetMapping("/recommendations/top-rated")
+    public ResponseEntity<List<MovieResponseDto>> getTopRatedRecommendations() {
+        List<MovieResponseDto> response = recommendationService.recommendTopRatedMovies();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     //영화 키워드를 통한 쿼리문 검색
     @GetMapping("/search")

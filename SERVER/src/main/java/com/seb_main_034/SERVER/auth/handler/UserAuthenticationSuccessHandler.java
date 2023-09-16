@@ -30,6 +30,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         ObjectMapper objectMapper = new ObjectMapper();
         Users principal = (Users) authentication.getPrincipal();
 
+        Long userId = principal.getUserId();
         String userEmail = principal.getEmail();
         String Role = isUser;
         if (principal.getRoles().contains("ADMIN")) {
@@ -39,7 +40,7 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        objectMapper.writeValue(response.getWriter(), new LoginSuccessResponseDto(userEmail, Role));
+        objectMapper.writeValue(response.getWriter(), new LoginSuccessResponseDto(userId ,userEmail, Role));
 
         log.info("{} 회원 로그인 성공", principal.getNickName());
 

@@ -14,6 +14,8 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class UserResponseDto {
 
+    private Long userId;
+
     @NotBlank
     @Email
     private String email;

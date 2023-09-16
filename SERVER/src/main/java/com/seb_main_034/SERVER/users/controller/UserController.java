@@ -1,10 +1,9 @@
 package com.seb_main_034.SERVER.users.controller;
 
 
-import com.seb_main_034.SERVER.users.dto.PasswordDto;
-import com.seb_main_034.SERVER.users.dto.UserPatchDto;
-import com.seb_main_034.SERVER.users.dto.UserResponseDto;
-import com.seb_main_034.SERVER.users.dto.UserSaveDto;
+import com.seb_main_034.SERVER.exception.ExceptionCode;
+import com.seb_main_034.SERVER.exception.GlobalException;
+import com.seb_main_034.SERVER.users.dto.*;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.mapper.PatchMapper;
 import com.seb_main_034.SERVER.users.mapper.UserMapper;
@@ -13,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -29,15 +29,19 @@ public class UserController {
     private final PatchMapper patchMapper;
 
     @GetMapping("/info/{userId}") // 회원조회
-    public ResponseEntity info(@PathVariable @Positive Long userId) {
+    public ResponseEntity info(@PathVariable @Positive Long userId,
+                               @AuthenticationPrincipal Users user) {
+
+        verifyUserId(user, userId);
         Users findUser = service.findById(userId);
         return new ResponseEntity<>(createResponseDto(findUser), HttpStatus.OK);
     }
 
     @GetMapping("/info/all")
-    public ResponseEntity allUsers() {
+    public ResponseEntity allUsers(@AuthenticationPrincipal Users user) {
+        checkAdmin(user);
         List<Users> usersList = service.findAllUsers();
-        return new ResponseEntity<>(usersList, HttpStatus.OK);
+        return new ResponseEntity<>(new AllUserListDto(usersList), HttpStatus.OK);
     }
 
     @PostMapping("/register") // 회원가입
@@ -51,8 +55,9 @@ public class UserController {
 
     @PatchMapping("/update/{userId}") // 회원정보 수정 가입할 때 사진을 등록하지 않아도, 여기서 등록할 수 있음 비어있는걸 보내면 사용중이던 것 그대로 사용
     public ResponseEntity update(@PathVariable @Positive Long userId,
-                                 @Valid @RequestBody UserPatchDto userPatchDto) {
-
+                                 @Valid @RequestBody UserPatchDto userPatchDto,
+                                 @AuthenticationPrincipal Users user) {
+        verifyUserId(user, userId);
         Users updatedUser = service.update(userId, userPatchDto);
 
         return new ResponseEntity<>(createResponseDto(updatedUser), HttpStatus.OK);
@@ -61,16 +66,19 @@ public class UserController {
 
     @PatchMapping("/password/{userId}") // 비밀번호 변경. 임시로 작성. 후에 로그인 되어있는지 확인하는 코드와 로그아웃 시키는 코드가 필요할듯?
     public String updatePassword(@PathVariable Long userId,
-                                 @Valid @RequestBody PasswordDto passwordDto) {
-
+                                 @Valid @RequestBody PasswordDto passwordDto,
+                                 @AuthenticationPrincipal Users user) {
+        verifyUserId(user, userId);
         service.changePw(userId, passwordDto);
 
         return "비밀번호 변경 완료!";
     }
 
     @DeleteMapping("/delete/{userId}") // 회원탈퇴
-    public ResponseEntity delete(@PathVariable @Positive Long userId) {
+    public ResponseEntity delete(@PathVariable @Positive Long userId,
+                                 @AuthenticationPrincipal Users user) {
 
+        verifyUserId(user, userId);
         Users findUser = service.findById(userId);
         service.delete(findUser);
 
@@ -84,7 +92,22 @@ public class UserController {
 //        service.deleteAll();
 //        return new ResponseEntity("전부삭제 완료", HttpStatus.OK);
 //    }
-    
+
+    private void verifyUserId(Users requestUser, Long userId) { // 관리자인지 확인하면서 동일한 ID의 요청인지 검증
+
+        Long requestUserId = requestUser.getUserId();
+        if (!checkAdmin(requestUser)) {
+            if (!requestUserId.equals(userId)) {
+                throw new GlobalException(ExceptionCode.FORBIDDEN);
+            }
+        }
+    }
+    private boolean checkAdmin(Users loginUser) { // 관리자인지 확인
+        if (!loginUser.getRoles().contains("ADMIN")) {
+            throw new GlobalException(ExceptionCode.FORBIDDEN);
+        }
+        return true;
+    }
     private UserResponseDto createResponseDto(Users user) {
         return mapper.UsertoUserResponseDto(user);
     }

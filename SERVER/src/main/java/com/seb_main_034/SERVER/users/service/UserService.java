@@ -2,7 +2,7 @@ package com.seb_main_034.SERVER.users.service;
 
 import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import com.seb_main_034.SERVER.exception.ExceptionCode;
-import com.seb_main_034.SERVER.exception.UserException;
+import com.seb_main_034.SERVER.exception.GlobalException;
 import com.seb_main_034.SERVER.users.dto.PasswordDto;
 import com.seb_main_034.SERVER.users.dto.UserPatchDto;
 import com.seb_main_034.SERVER.users.entity.Users;
@@ -48,7 +48,7 @@ public class UserService {
         log.info("업데이트 요청 회원의 Id = {}", userId);
         Users findUser = findById(userId);
         if (repository.findBynickName(userPatchDto.getNickName()).isPresent()) {
-            throw new UserException(ExceptionCode.NICKNAME_EXISTS);
+            throw new GlobalException(ExceptionCode.NICKNAME_EXISTS);
         }
         return repository.save(patchMapper.UserPatchDTOtoUser(findUser,userPatchDto));
     }
@@ -75,22 +75,21 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<Users> findAllUsers() {
         List<Users> tmpList = repository.findAll();
-        List<Users> usersList = deleteAdmin(tmpList);
 
-        return usersList;
+        return deleteAdmin(tmpList);
     }
 
     @Transactional(readOnly = true)
     public Users findById(Long userId) {
         log.info("찾을 회원의 Id = {}", userId);
-        return repository.findById(userId).orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+        return repository.findById(userId).orElseThrow(() -> new GlobalException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public Users findByEmail(String email) {
         log.info("회원조회에 사용될 이메일 = {}", email);
         Users findUser = repository.findByEmail(email).orElseThrow(
-                () -> new UserException(ExceptionCode.USER_NOT_FOUND));
+                () -> new GlobalException(ExceptionCode.USER_NOT_FOUND));
 
         return findUser;
     }
@@ -100,22 +99,21 @@ public class UserService {
      * 단, 닉네임이 null로 같아도 에러가나는데, 이 부분 수정 필요.
      */
     public boolean checkEmail(String email, String nickName) {
-        log.info("이메일과 닉네임 체크");
 
         if (repository.findByEmail(email).isPresent()) {
             log.error("중복된 이메일 요청 = {}", email);
-            throw new UserException(ExceptionCode.USER_EXISTS);
+            throw new GlobalException(ExceptionCode.USER_EXISTS);
         }
 
         if (repository.findBynickName(nickName).isPresent()) {
             log.error("중복된 닉네임 요청 = {}", nickName);
-            throw new UserException(ExceptionCode.NICKNAME_EXISTS);
+            throw new GlobalException(ExceptionCode.NICKNAME_EXISTS);
         }
         return true;
     }
 
-    public List<Users> deleteAdmin(List<Users> usersList) {
-        log.info("관리자 계정은 모든 회원목록에서 보이지 않아야함");
+    public List<Users> deleteAdmin(List<Users> usersList) { // 관리자계정을 모든 회원목록에서 보이지 않게 함
+
         return usersList.stream().filter(user -> user.getRoles().size() == 1) // 회원은 권한을 오직 1개만 갖고있음
                                  .collect(Collectors.toList());
     }

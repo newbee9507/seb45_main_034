@@ -26,7 +26,6 @@ public class UserController {
 
     private final UserService service;
     private final UserMapper mapper;
-    private final PatchMapper patchMapper;
 
     @GetMapping("/info/{userId}") // 회원조회
     public ResponseEntity info(@PathVariable @Positive Long userId,
@@ -85,30 +84,28 @@ public class UserController {
         return new ResponseEntity("삭제 완료", HttpStatus.OK);
     }
 
-//    @DeleteMapping("/delete/all") // 테스트용 모두 삭제
+    private void verifyUserId(Users requestUser, Long userId) {
+        Long loginUserId = requestUser.getUserId();
+        if (loginUserId.equals(userId) || checkAdmin(requestUser)) {
+            return;
+        }
+        throw new GlobalException(ExceptionCode.FORBIDDEN);
+    }
+    private boolean checkAdmin(Users loginUser) {
+        if (loginUser.getRoles().contains("ADMIN")) {
+            return true;
+        }
+        throw new GlobalException(ExceptionCode.FORBIDDEN);
+    }
+    private UserResponseDto createResponseDto(Users user) {
+        return mapper.UsertoUserResponseDto(user);
+    }
+
+    //    @DeleteMapping("/delete/all") // 테스트용 모두 삭제
 //    public ResponseEntity deleteAll() {
 //        log.info("Controller 호출 -> 전부 삭제");
 //
 //        service.deleteAll();
 //        return new ResponseEntity("전부삭제 완료", HttpStatus.OK);
 //    }
-
-    private void verifyUserId(Users requestUser, Long userId) { // 관리자인지 확인하면서 동일한 ID의 요청인지 검증
-
-        Long requestUserId = requestUser.getUserId();
-        if (!checkAdmin(requestUser)) {
-            if (!requestUserId.equals(userId)) {
-                throw new GlobalException(ExceptionCode.FORBIDDEN);
-            }
-        }
-    }
-    private boolean checkAdmin(Users loginUser) { // 관리자인지 확인
-        if (!loginUser.getRoles().contains("ADMIN")) {
-            throw new GlobalException(ExceptionCode.FORBIDDEN);
-        }
-        return true;
-    }
-    private UserResponseDto createResponseDto(Users user) {
-        return mapper.UsertoUserResponseDto(user);
-    }
 }

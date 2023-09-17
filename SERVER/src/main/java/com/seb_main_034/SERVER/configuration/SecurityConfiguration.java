@@ -53,9 +53,6 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->authorize
-                        /**
-                         * [ 회원은 ] 이란 표현에는, 기본적으로 회원 스스로의 ...에만 접근 가능이 포함되어 있습니다.
-                         */
                         .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/update/**").hasAnyRole("USER", "ADMIN") // 회원과 관리자는 회원정보 수정에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/password/**").hasRole("USER") // 스스로의 비밀번호만 변경가능

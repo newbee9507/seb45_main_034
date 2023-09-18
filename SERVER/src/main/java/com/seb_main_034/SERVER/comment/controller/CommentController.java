@@ -61,7 +61,7 @@ public class CommentController {
                                         @AuthenticationPrincipal Users user
                                         ) {
         Comment comment = mapper.updateDtoToComment(updateDto, user);
-        Comment updatedComment = service.update(comment, user, commentId, movieId);
+        Comment updatedComment = service.update(comment, user, commentId);
 
         CommentResponseDto responseDto = mapper.commentToResponseDto(updatedComment);
 

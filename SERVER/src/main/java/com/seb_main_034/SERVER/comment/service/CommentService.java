@@ -41,11 +41,11 @@ public class CommentService {
         return repository.save(comment);
     }
 
-    public Comment update(Comment comment, Users user, Long commentId, Long movieId) {
+    public Comment update(Comment comment, Users user, Long commentId) {
         Comment wantUpdateComment = findById(commentId);
         log.info("수정요청한 댓글ID = {}", wantUpdateComment.getCommentId());
 
-        if (verifyUser(wantUpdateComment, user, movieId)) {
+        if (verifyUser(wantUpdateComment, user)) {
             wantUpdateComment.setText(comment.getText());
             return repository.save(wantUpdateComment);
         }
@@ -54,7 +54,7 @@ public class CommentService {
 
     public void delete(Long commentId, Users user) {
         Comment findComment = findById(commentId);
-        if (isAdmin(user)) {
+        if (isAdmin(user) || verifyUser(findComment, user)) {
             repository.delete(findComment);
         }
         throw new GlobalException(ExceptionCode.FORBIDDEN);
@@ -71,16 +71,13 @@ public class CommentService {
      * 본인이 작성한 댓글만을 수정 및 삭제할 수 있음. 관리자는 검증없이 가능.
      * 현재 페이지의 영화ID와, 원래 댓글의 영화ID가 달라도 수정할 수 없음..? ( 페이지에 안 보이게 하는게 기본 )
      */
-    private boolean verifyUser(Comment comment, Users user, Long movieId) {
-        Long wantUpdateMovieId = comment.getMovie().getMovieId();
-        Movie movie = movieService.findMovie(movieId);
-
+    private boolean verifyUser(Comment comment, Users user) {
         log.info("본인의 댓글인지 검증");
 
         Long writerId = comment.getUser().getUserId();
         Long requestId = user.getUserId();
 
-        return writerId.equals(requestId) && wantUpdateMovieId.equals(movie.getMovieId());
+        return writerId.equals(requestId);
     }
 
     private boolean isAdmin(Users user) {

@@ -56,6 +56,7 @@ public class CommentService {
         Comment findComment = findById(commentId);
         if (isAdmin(user) || verifyUser(findComment, user)) {
             repository.delete(findComment);
+            return;
         }
         throw new GlobalException(ExceptionCode.FORBIDDEN);
 

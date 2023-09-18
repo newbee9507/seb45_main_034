@@ -26,7 +26,7 @@ public class MovieService {
     public Movie createMovie(Movie movie, Long userId) {
         Users userAdmin = userService.findById(userId);
         if (!userAdmin.getRoles().contains("ADMIN")) {
-            throw new UnauthorizedException("관리자 권한이 있는 유저만 등록 가능합니다.");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "관리자 권한이 있는 유저만 등록 가능합니다");
         }
         return movieRepository.save(movie);
     }

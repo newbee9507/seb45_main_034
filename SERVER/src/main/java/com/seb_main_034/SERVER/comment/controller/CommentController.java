@@ -73,7 +73,7 @@ public class CommentController {
                                         @AuthenticationPrincipal Users users,
                                         @PathVariable Long commentId) {
 
-        service.delete(commentId, users, movieId);
+        service.delete(commentId, users);
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
 

@@ -52,9 +52,9 @@ public class CommentService {
         throw new GlobalException(ExceptionCode.FORBIDDEN);
     }
 
-    public void delete(Long commentId, Users user, Long movieId) {
+    public void delete(Long commentId, Users user) {
         Comment findComment = findById(commentId);
-        if (verifyUser(findComment, user, movieId)) {
+        if (isAdmin(user)) {
             repository.delete(findComment);
         }
         throw new GlobalException(ExceptionCode.FORBIDDEN);
@@ -77,13 +77,13 @@ public class CommentService {
 
         log.info("본인의 댓글인지 검증");
 
-        if (user.getRoles().contains("ADMIN") && wantUpdateMovieId.equals(movie.getMovieId())) {
-            return true;
-        }
-
         Long writerId = comment.getUser().getUserId();
         Long requestId = user.getUserId();
 
         return writerId.equals(requestId) && wantUpdateMovieId.equals(movie.getMovieId());
+    }
+
+    private boolean isAdmin(Users user) {
+        return user.getRoles().contains("ADMIN");
     }
 }

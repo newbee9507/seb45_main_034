@@ -49,6 +49,7 @@ public class MovieController {
     public ResponseEntity postMovie(@Valid @RequestBody MoviePostDto moviePostDto,
                                     @AuthenticationPrincipal Users user) { // Long userId(X) 에서 수정했습니다
         Movie movie = movieService.createMovie(movieMapper.moviePostDtoToMovie(moviePostDto), user.getUserId());
+        movie.setUser(user);
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

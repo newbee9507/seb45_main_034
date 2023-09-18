@@ -3,6 +3,7 @@ package com.seb_main_034.SERVER.movie.service;
 import com.seb_main_034.SERVER.movie.entity.Movie;
 import com.seb_main_034.SERVER.movie.exception.BusinessLogicException;
 import com.seb_main_034.SERVER.movie.repository.MovieRepository;
+import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,8 +31,8 @@ public class MovieService {
     //영화 게시글 수정
     public Movie updateMovie(Movie movie, Long userId) {
         Movie findMovie = findMovie(movie.getMovieId());
-        Long findMovieUserId = findMovie.getUser().getUserId();
-        if (findMovieUserId.equals(userId)) {
+        Users loginUser = userService.findById(userId);
+        if (loginUser.getRoles().contains("ADMIN")) {
             findMovie.setTitle(movie.getTitle());
             findMovie.setGenre(movie.getGenre());
             findMovie.setStreamingURL(movie.getStreamingURL());
@@ -81,8 +82,8 @@ public class MovieService {
 
     public void deleteMovie(long movieId, Long userId) {
         Movie findMovie = findMovie(movieId);
-        Long findMovieUserId = findMovie.getUser().getUserId();
-        if (findMovieUserId.equals(userId)){
+        Users loginUser = userService.findById(userId);
+        if (loginUser.getRoles().contains("ADMIN")){
             movieRepository.delete(findMovie);
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이 영화 정보를 삭제 할 권한이 없습니다.");

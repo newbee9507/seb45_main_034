@@ -1,6 +1,5 @@
 package com.seb_main_034.SERVER.movie.controller;
 
-import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.seb_main_034.SERVER.comment.dto.CommentResponseDto;
 import com.seb_main_034.SERVER.comment.entity.Comment;
 import com.seb_main_034.SERVER.comment.mapper.CommentMapper;
@@ -11,6 +10,10 @@ import com.seb_main_034.SERVER.movie.dto.MovieResponseDto;
 import com.seb_main_034.SERVER.movie.entity.Movie;
 import com.seb_main_034.SERVER.movie.mapper.MovieMapper;
 import com.seb_main_034.SERVER.movie.service.MovieService;
+import com.seb_main_034.SERVER.rating.dto.RatingDTO;
+import com.seb_main_034.SERVER.rating.entity.Rating;
+import com.seb_main_034.SERVER.rating.mapper.RatingMapper;
+import com.seb_main_034.SERVER.rating.service.RatingService;
 import com.seb_main_034.SERVER.recommendation.service.RecommendationService;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,8 @@ public class MovieController {
     private final MovieService movieService;
     private final MovieMapper movieMapper;
     private final CommentMapper commentMapper;
+    private final RatingService ratingService;
+    private final RatingMapper ratingMapper;
     private final RecommendationService recommendationService;
 
     //영화 정보 등록
@@ -79,9 +84,11 @@ public class MovieController {
 
         List<CommentResponseDto> commentResponseDto = commentMapper.commentListToResponseListDto(commentList);
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie); // 영화 entity를 Dto로 변환함
+        List<Rating> ratings = ratingService.sendRating(movieId);
+        List<RatingDTO> ratingDTOS = ratingMapper.ratingListToRatingListDto(ratings);
 
-        MovieCommentResponseDto< MovieResponseDto, List<CommentResponseDto> > movieCommentResponseDto
-                = new MovieCommentResponseDto<>(response, commentResponseDto);
+        MovieCommentResponseDto< MovieResponseDto, List<CommentResponseDto>, List<RatingDTO>>
+                movieCommentResponseDto = new MovieCommentResponseDto<>(response, commentResponseDto, ratingDTOS);
 
         return new ResponseEntity<>(movieCommentResponseDto, HttpStatus.OK);
     }

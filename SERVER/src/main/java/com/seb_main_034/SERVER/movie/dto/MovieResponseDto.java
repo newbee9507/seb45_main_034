@@ -19,4 +19,6 @@ public class MovieResponseDto {
 
     private String description;
 
+    private Double rating;
+
 }

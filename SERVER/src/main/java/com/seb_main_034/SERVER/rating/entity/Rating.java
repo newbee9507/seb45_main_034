@@ -16,5 +16,5 @@ public class Rating {
     private Long id;
     private Long userId;
     private Long movieId;
-    private Integer rating;
+    private Double rating;
 }

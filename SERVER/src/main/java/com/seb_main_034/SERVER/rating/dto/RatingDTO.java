@@ -6,5 +6,5 @@ import lombok.Data;
 public class RatingDTO {
     private Long userId;
     private Long movieId;
-    private int rating;
+    private Double rating;
 }

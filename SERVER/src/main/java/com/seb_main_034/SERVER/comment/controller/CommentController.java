@@ -7,6 +7,10 @@ import com.seb_main_034.SERVER.comment.dto.CommentUpdateDto;
 import com.seb_main_034.SERVER.comment.entity.Comment;
 import com.seb_main_034.SERVER.comment.mapper.CommentMapper;
 import com.seb_main_034.SERVER.comment.service.CommentService;
+import com.seb_main_034.SERVER.exception.ExceptionCode;
+import com.seb_main_034.SERVER.exception.GlobalException;
+import com.seb_main_034.SERVER.movie.entity.Movie;
+import com.seb_main_034.SERVER.movie.service.MovieService;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -26,6 +31,7 @@ public class CommentController {
 
     private final CommentService service;
     private final CommentMapper mapper;
+    private final MovieService movieService;
 
 //    @GetMapping
 //    public Comment getComment() { // 필요한 기능인지는 의문. 하나의 질문만을 찾을 이유가 있을까..?
@@ -45,7 +51,7 @@ public class CommentController {
                                         @Valid @RequestBody CommentSaveDto saveDto,
                                         @AuthenticationPrincipal Users user // 어떤 유저가 이 댓글을 달았는지 설정하기 위해. 자동으로 현재 로그인한 회원의 정보를 가져온다고 함.
                                         ) {
-
+        tmp(movieId, user);
         Comment savedComment = service.saveComment(mapper.saveDtoToComment(saveDto, user), movieId);
         CommentResponseDto responseDto = mapper.commentToResponseDto(savedComment);
 
@@ -75,6 +81,22 @@ public class CommentController {
 
         service.delete(commentId, users);
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
+    }
+
+    private void tmp(Long movieId, Users user) {
+        Movie movie = movieService.findMovie(movieId);
+        List<Comment> commentList = movie.getCommentList();
+
+        List<Long> collect = commentList.stream()
+                                        .map(comment -> comment.getUser().getUserId())
+                                        .collect(Collectors.toList());
+
+        if (collect.contains(user.getUserId())) {
+            log.info("댓글은 한 영화당 1개만");
+            throw new GlobalException(ExceptionCode.BAD_REQUEST);
+        }
+
+        log.info("새로운 댓글");
     }
 
 }

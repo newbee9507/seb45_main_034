@@ -1,7 +1,7 @@
 package com.seb_main_034.SERVER.movie.service;
 
+import com.amazonaws.services.mq.model.UnauthorizedException;
 import com.seb_main_034.SERVER.movie.entity.Movie;
-import com.seb_main_034.SERVER.movie.exception.BusinessLogicException;
 import com.seb_main_034.SERVER.movie.repository.MovieRepository;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.service.UserService;
@@ -24,9 +24,13 @@ public class MovieService {
 
     //영화 등록
     public Movie createMovie(Movie movie, Long userId) {
-        movie.setUser(userService.findById(userId));
+        Users userAdmin = userService.findById(userId);
+        if (!userAdmin.getRoles().contains("ADMIN")) {
+            throw new UnauthorizedException("관리자 권한이 있는 유저만 등록 가능합니다.");
+        }
         return movieRepository.save(movie);
     }
+
 
     //영화 게시글 수정
     public Movie updateMovie(Movie movie, Long userId) {

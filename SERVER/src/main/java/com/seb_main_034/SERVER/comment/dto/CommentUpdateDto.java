@@ -7,7 +7,8 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class CommentUpdateDto {
 
+    private Long commentId;
+
     @NotBlank
     private String text;
-
 }

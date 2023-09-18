@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Setter
 public class CommentResponseDto {
 
+    private Long commentId;
+
     private String text;
 
     private String nickName;

@@ -21,7 +21,7 @@ public class ExceptionAdvice {
 
         HttpStatus resultStatus = HttpStatus.valueOf(status);
 
-        return new ResponseEntity<>(ErrorResponse.sendUserExResponse(e), resultStatus);
+        return new ResponseEntity<>(ErrorResponse.sendGlobalExResponse(e), resultStatus);
     }
 
     @ExceptionHandler

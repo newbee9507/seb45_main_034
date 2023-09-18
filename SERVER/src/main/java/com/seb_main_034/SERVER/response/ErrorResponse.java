@@ -5,7 +5,6 @@ import com.seb_main_034.SERVER.exception.GlobalException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -15,7 +14,7 @@ public class ErrorResponse {
     private int status;
     private String message;
 
-    public static ErrorResponse sendUserExResponse(GlobalException globalException) {
+    public static ErrorResponse sendGlobalExResponse(GlobalException globalException) {
         int status = globalException.getCode().getStatus();
         String message = globalException.getCode().getMessage();
 

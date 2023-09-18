@@ -66,6 +66,11 @@ public class UserService {
         repository.save(findUser);
     }
 
+    @Transactional(readOnly = true)
+    public Users findById(Long userId) {
+        log.info("찾을 회원의 Id = {}", userId);
+        return repository.findById(userId).orElseThrow(() -> new GlobalException(ExceptionCode.USER_NOT_FOUND));
+    }
 
     /**
      * 관리자 계정은 다른 테이블을 하나 만들어서 그곳에서 관리하는것이 더 낫지 않을까?
@@ -77,12 +82,6 @@ public class UserService {
         List<Users> tmpList = repository.findAll();
 
         return deleteAdmin(tmpList);
-    }
-
-    @Transactional(readOnly = true)
-    public Users findById(Long userId) {
-        log.info("찾을 회원의 Id = {}", userId);
-        return repository.findById(userId).orElseThrow(() -> new GlobalException(ExceptionCode.USER_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)

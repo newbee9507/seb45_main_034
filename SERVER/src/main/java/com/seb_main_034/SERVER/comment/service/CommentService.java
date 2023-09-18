@@ -44,19 +44,21 @@ public class CommentService {
     public Comment update(Comment comment, Users user, Long commentId, Long movieId) {
         Comment wantUpdateComment = findById(commentId);
         log.info("수정요청한 댓글ID = {}", wantUpdateComment.getCommentId());
+
         if (verifyUser(wantUpdateComment, user, movieId)) {
             wantUpdateComment.setText(comment.getText());
             return repository.save(wantUpdateComment);
         }
-        throw new GlobalException(ExceptionCode.UN_AUTHORITY);
+        throw new GlobalException(ExceptionCode.FORBIDDEN);
     }
 
     public void delete(Long commentId, Users user, Long movieId) {
         Comment findComment = findById(commentId);
-        if (!verifyUser(findComment, user, movieId)) {
-            throw new GlobalException(ExceptionCode.UN_AUTHORITY);
+        if (verifyUser(findComment, user, movieId)) {
+            repository.delete(findComment);
         }
-        repository.delete(findComment);
+        throw new GlobalException(ExceptionCode.FORBIDDEN);
+
     }
 
     @Transactional(readOnly = true)

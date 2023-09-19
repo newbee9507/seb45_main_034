@@ -24,12 +24,10 @@ public class JwtTokenizer {
     private String secretKey; // JWT 생성 및 검증에 사용되는 비밀키 정보.
 
     @Getter
-    @Value("${jwt.access-token-life-time}")
-    private int accessTokenLifeTime; // accessToken 만료시간 정보
+    private int accessTokenLifeTime = 1;  // accessToken 만료시간 정보
 
     @Getter
-    @Value("${jwt.refresh-token-life-time}")
-    private int refreshTokenLifeTime; // refreshToken 만료시간 정보
+    private int refreshTokenLifeTime = 20160; // refreshToken 만료시간 정보
 
     // 비밀키를 암호화해 생성
     public String encodeBase64SecretKey(String secretKey) {

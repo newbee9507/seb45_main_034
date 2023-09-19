@@ -94,7 +94,8 @@ public class SecurityConfiguration {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080", "http://miniflix.s3-website.ap-northeast-2.amazonaws.com", "http://miniflix.s3-website.ap-northeast-2.amazonaws.com:8080"));
+//        configuration.setAllowedOrigins(Arrays.asList("localhost:3000", "localhost:8080", "http://miniflix.s3-website.ap-northeast-2.amazonaws.com"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");

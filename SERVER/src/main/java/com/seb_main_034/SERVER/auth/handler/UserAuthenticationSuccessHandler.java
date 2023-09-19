@@ -40,7 +40,6 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
-        log.info("get = {}", response.getHeader("Refresh"));
         objectMapper.writeValue(response.getWriter(), new LoginSuccessResponseDto(userId ,userEmail, Role));
 
         log.info("{} 회원 로그인 성공", principal.getNickName());

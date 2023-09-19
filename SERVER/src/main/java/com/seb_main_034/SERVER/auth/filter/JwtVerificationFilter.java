@@ -49,8 +49,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter { // 이 클래�
         } catch (Exception e) {
             request.setAttribute("exception", e);
         } // 메서드 실행중, 어느 한 곳에서 예외가 터지면 인증객체를 SecurityContext에 저장하지 않음.
-          // 이 상태에서 다음 필터들을 진행하다보면 인증정보가 없어서 AuthenticationException이 발생함.
-          // 이 예외는 UserAuthenticationEntryPoint 가 받을 예정.
+        // 이 상태에서 다음 필터들을 진행하다보면 인증정보가 없어서 AuthenticationException이 발생함.
+        // 이 예외는 UserAuthenticationEntryPoint 가 받을 예정.
 
         //서명검증 -> 저장 순으로 모두 성공한다면, 다음 필터를 호출
         filterChain.doFilter(request, response);

@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.movie.entity;
 
+import com.seb_main_034.SERVER.rating.entity.Rating;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.comment.entity.Comment;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class Movie {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne
@@ -35,17 +36,23 @@ public class Movie {
     @Column(nullable = true)
     private String genre;
 
-    @Column
-    private String previewPicture;
-
-    @Column
-    private String streamingURL;
-
     @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>(); // 이 부분을 수정
 
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.REMOVE)
+    private List<Rating> ratingList = new ArrayList<>();  // 새로운 필드 추가
+
+    private String streamingURL;
+
     public List<Comment> getCommentList() {
         return commentList;
+    }
+
+    public void updateAverageRating() {
+        this.averageRating = ratingList.stream()
+                .mapToDouble(Rating::getRating)
+                .average()
+                .orElse(0.0);
     }
 }
 

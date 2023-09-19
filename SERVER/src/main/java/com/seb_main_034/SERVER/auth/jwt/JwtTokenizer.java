@@ -37,9 +37,9 @@ public class JwtTokenizer {
     }
 
     public String createAccessToken(Map<String, Object> claims,
-                                      String subject,
-                                      Date expiration,
-                                      String base64SecretKey) {
+                                    String subject,
+                                    Date expiration,
+                                    String base64SecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64SecretKey); // base64로 인코딩된 문자열로 Key객체 생성
 
         return Jwts.builder()

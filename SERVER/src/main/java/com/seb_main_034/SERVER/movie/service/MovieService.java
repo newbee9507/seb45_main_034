@@ -3,6 +3,8 @@ package com.seb_main_034.SERVER.movie.service;
 import com.amazonaws.services.mq.model.UnauthorizedException;
 import com.seb_main_034.SERVER.movie.entity.Movie;
 import com.seb_main_034.SERVER.movie.repository.MovieRepository;
+import com.seb_main_034.SERVER.rating.entity.Rating;
+import com.seb_main_034.SERVER.rating.repository.RatingRepository;
 import com.seb_main_034.SERVER.users.entity.Users;
 import com.seb_main_034.SERVER.users.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,29 +24,24 @@ import java.util.Optional;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final UserService userService;
+    private final RatingRepository ratingRepository;  // RatingRepository를 추가합니다.
+
 
     //영화 등록
     public Movie createMovie(Movie movie, Long userId) {
-        Users userAdmin = userService.findById(userId);
-        if (userAdmin.getRoles().contains("ADMIN")) {
-            movie.setUser(userService.findById(userId));
-            return movieRepository.save(movie);
-        } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "관리자 권한이 있는 유저만 등록 가능합니다");
-        }
+        movie.setUser(userService.findById(userId));
+        return movieRepository.save(movie);
     }
-
 
     //영화 게시글 수정
     public Movie updateMovie(Movie movie, Long userId) {
         Movie findMovie = findMovie(movie.getMovieId());
-        Users loginUser = userService.findById(userId);
-        if (loginUser.getRoles().contains("ADMIN")) {
+        Long findMovieUserId = findMovie.getUser().getUserId();
+        if (findMovieUserId.equals(userId)) {
             findMovie.setTitle(movie.getTitle());
             findMovie.setGenre(movie.getGenre());
             findMovie.setStreamingURL(movie.getStreamingURL());
             findMovie.setDescription(movie.getDescription());
-            findMovie.setAverageRating(movie.getAverageRating());
             return movieRepository.save(findMovie);
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"이 영화를 수정할 권한이 없습니다.");
@@ -89,8 +87,8 @@ public class MovieService {
 
     public void deleteMovie(long movieId, Long userId) {
         Movie findMovie = findMovie(movieId);
-        Users loginUser = userService.findById(userId);
-        if (loginUser.getRoles().contains("ADMIN")){
+        Long findMovieUserId = findMovie.getUser().getUserId();
+        if (findMovieUserId.equals(userId)){
             movieRepository.delete(findMovie);
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이 영화 정보를 삭제 할 권한이 없습니다.");
@@ -107,5 +105,19 @@ public class MovieService {
     public Optional<Movie> getMovieById(Long movieId) {
         return movieRepository.findById(movieId);
     }
+
+    public void updateAverageRating(Long movieId) {
+        // 평균 평점을 계산하는 로직
+        List<Rating> ratings = ratingRepository.findByMovieId(movieId);  // 평점 리스트를 가져옵니다.
+        double average = ratings.stream().mapToDouble(Rating::getRating).average().orElse(0.0);  // 평균을 계산합니다.
+
+        Movie movie = findMovie(movieId);  // 영화 정보를 가져옵니다.
+        movie.setAverageRating(average);  // 평균 평점을 movie 엔터티에 설정합니다.
+        movieRepository.save(movie);  // movie 엔터티를 저장합니다.
+    }
+    public Movie save(Movie movie) {
+        return movieRepository.save(movie);
+    }
+
 
 }

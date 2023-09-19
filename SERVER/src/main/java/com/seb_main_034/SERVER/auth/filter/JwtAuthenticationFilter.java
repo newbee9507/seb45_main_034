@@ -63,6 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = delegateAccessToken(user);
         String refreshToken = delegateRefreshToken(user);
 
+        //response 헤더에 엑세스 토큰을 담아 보냄. 이후 클라이언트가 request 헤더에 추가해서 자격증명에 사용
         LocalDateTime expirationTime = LocalDateTime.now().plus(30, ChronoUnit.MINUTES);
 
         //response 헤더에 엑세스 토큰을 담아 보냄. 이후 클라이언트가 request 헤더에 추가해서 자격증명에 사용

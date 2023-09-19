@@ -20,15 +20,10 @@ public class RatingController {
     private RatingService ratingService;
 
     @PostMapping
-    public void addRating(@RequestBody RatingDTO ratingDTO,
-                          @AuthenticationPrincipal Users user) {
+    public void saveRating(@RequestBody RatingDTO ratingDTO,
+                           @AuthenticationPrincipal Users user) {
         Long userId = user.getUserId();
-        ratingService.addRating(ratingDTO, userId);
+        ratingService.saveRating(ratingDTO, userId);
     }
-
-    @DeleteMapping("/{ratingId}")
-    public void deleteRating(@PathVariable Long ratingId) {
-        ratingService.deleteRating(ratingId);
-    }
-
 }
+

@@ -6,5 +6,5 @@ import lombok.Data;
 public class RatingDTO {
     private Long userId;
     private Long movieId;
-    private Double rating;
+    private double rating;  // int에서 double로 변경
 }

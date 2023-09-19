@@ -55,8 +55,6 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->authorize
-                        .antMatchers(HttpMethod.OPTIONS, "/api/users/register").permitAll()
-                        .antMatchers(HttpMethod.OPTIONS, "/api/users/login").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/update/**").hasAnyRole("USER", "ADMIN") // 회원과 관리자는 회원정보 수정에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/password/**").hasRole("USER") // 스스로의 비밀번호만 변경가능

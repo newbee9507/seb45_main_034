@@ -4,6 +4,7 @@ import com.seb_main_034.SERVER.auth.filter.JwtAuthenticationFilter;
 import com.seb_main_034.SERVER.auth.filter.JwtVerificationFilter;
 import com.seb_main_034.SERVER.auth.handler.*;
 import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
+import com.seb_main_034.SERVER.auth.service.RefreTokenService;
 import com.seb_main_034.SERVER.auth.userdetails.UsersDetailsService;
 import com.seb_main_034.SERVER.auth.utils.UsersAuthorityUtils;
 import com.seb_main_034.SERVER.users.service.UserService;
@@ -34,7 +35,7 @@ public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final UsersAuthorityUtils authorityUtils;
     private final UsersDetailsService usersDetailsService;
-
+    private final RefreTokenService refreTokenService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -106,7 +107,7 @@ public class SecurityConfiguration {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
             //JwtAuthenticationFilter 에 필요한 authenticationManager와 jwtTokenizer를 DI
-            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer, refreTokenService);
             jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
 
             //성공시 이 핸들러의 호출을 설정

@@ -29,7 +29,7 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
         if (exception instanceof BadCredentialsException || exception instanceof UsernameNotFoundException) {
             ErrorResponder.sendErrorResponse(response, ExceptionCode.LOGIN_FAIL);
         }
-        logExceptionMessage(authException, exception);
+        ErrorResponder.sendErrorResponse(response, ExceptionCode.UN_AUTHORITY);
     }
 
     private void logExceptionMessage(AuthenticationException authException, Exception exception) {

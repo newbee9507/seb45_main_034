@@ -90,11 +90,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 리프레쉬 토큰을 생성하는데 필요한 정보들을 세팅해 JwtTokenizer 클래스의 생성 메서드로 전달. 만들어진 토큰을 여기서 반환함
     private String delegateRefreshToken(Users user) {
+        Map<String, Object> claims = new ConcurrentHashMap<>();
+        claims.put("email", user.getEmail());
+        claims.put("roles", user.getRoles());
+
         String subject = user.getEmail();
         Date expiration = jwtTokenizer.getTokenLifeTime(jwtTokenizer.getRefreshTokenLifeTime());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String refreshToken = jwtTokenizer.createRefreshToken(subject, expiration, base64EncodedSecretKey);
+        String refreshToken = jwtTokenizer.createRefreshToken(claims, subject, expiration, base64EncodedSecretKey);
 
         return refreshToken;
     }

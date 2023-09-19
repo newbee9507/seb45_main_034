@@ -1,6 +1,5 @@
 package com.seb_main_034.SERVER.comment.controller;
 
-import com.seb_main_034.SERVER.comment.dto.CommentListResponseDto;
 import com.seb_main_034.SERVER.comment.dto.CommentResponseDto;
 import com.seb_main_034.SERVER.comment.dto.CommentSaveDto;
 import com.seb_main_034.SERVER.comment.dto.CommentUpdateDto;
@@ -51,7 +50,7 @@ public class CommentController {
                                         @Valid @RequestBody CommentSaveDto saveDto,
                                         @AuthenticationPrincipal Users user // 어떤 유저가 이 댓글을 달았는지 설정하기 위해. 자동으로 현재 로그인한 회원의 정보를 가져온다고 함.
                                         ) {
-        tmp(movieId, user);
+        checkExistComment(movieId, user);
         Comment savedComment = service.saveComment(mapper.saveDtoToComment(saveDto, user), movieId);
         CommentResponseDto responseDto = mapper.commentToResponseDto(savedComment);
 
@@ -83,7 +82,7 @@ public class CommentController {
         return new ResponseEntity<>("삭제완료", HttpStatus.OK);
     }
 
-    private void tmp(Long movieId, Users user) {
+    private void checkExistComment(Long movieId, Users user) {
         Movie movie = movieService.findMovie(movieId);
         List<Comment> commentList = movie.getCommentList();
 
@@ -92,11 +91,9 @@ public class CommentController {
                                         .collect(Collectors.toList());
 
         if (collect.contains(user.getUserId())) {
-            log.info("댓글은 한 영화당 1개만");
-            throw new GlobalException(ExceptionCode.BAD_REQUEST);
+            throw new GlobalException(ExceptionCode.COMMENT_EXIST);
         }
 
-        log.info("새로운 댓글");
     }
 
 }

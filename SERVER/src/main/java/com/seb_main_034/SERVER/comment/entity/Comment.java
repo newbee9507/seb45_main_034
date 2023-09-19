@@ -1,6 +1,7 @@
 package com.seb_main_034.SERVER.comment.entity;
 
 import com.seb_main_034.SERVER.movie.entity.Movie;
+import com.seb_main_034.SERVER.rating.entity.Rating;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +38,10 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "movie_id") // 내가 무슨 영화의 댓글인지 알아야할까? 잘 모르겠음. 내가 작성한 댓글 -> 영화..?
     private Movie movie;
+
+    @OneToOne(cascade = CascadeType.REMOVE) // 댓글이 삭제되면 평점도 같이 삭제됨
+    @JoinColumn(name = "id")
+    private Rating rating;
 
     // 만들어진 일시
     @PrePersist

@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ExceptionCode {
 
     BAD_REQUEST(400, "잘못된 요청입니다"),
+    COMMENT_EXIST(400, "댓글은 한 영화당 하나만 작성할 수 있습니다"),
     UN_AUTHORITY(401,"로그인 후 다시 시도해주세요"),
     FORBIDDEN(403, "접근 권한이 없습니다"),
     LOGIN_FAIL(404, "이메일 혹은 비밀번호가 잘못되었습니다."),

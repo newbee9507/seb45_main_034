@@ -49,7 +49,14 @@ public class RatingService {
         double newAverage = calculateAverageRating(movieId);
         Movie movie = movieService.findMovie(movieId);
         movie.setAverageRating(newAverage);
-        movieService.updateMovie(movie, movie.getUser().getUserId());
+
+        Long userId = (movie.getUser() != null) ? movie.getUser().getUserId() : null;
+        if (userId == null) {
+            // 적절한 예외 처리
+            throw new IllegalArgumentException("User is not associated with the movie.");
+        }
+
+        movieService.updateMovie(movie, userId);
     }
 
     // 평균 평점 계산

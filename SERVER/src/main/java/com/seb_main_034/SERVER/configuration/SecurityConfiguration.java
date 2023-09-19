@@ -52,7 +52,7 @@ public class SecurityConfiguration {
         http.headers().frameOptions().sameOrigin()
                 .and()
                 .csrf().disable()
-                .cors().and()
+                .cors().configurationSource(corsConfigurationSource()).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 생성X, SecurityContext 정보를 얻기 위해 절대 세션을 사용X
                 .and()
                 .formLogin().disable() // CSR 방식으로 만들기 때문에 SSR 방식에서 사용하는 폼 로그인 비활성화.
@@ -96,12 +96,11 @@ public class SecurityConfiguration {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
-//                                                      "http://localhost:8080",
-//                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com",
-//                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com:8080"));
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedMethod("*");
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
+                                                      "http://localhost:8080",
+                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com",
+                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
         configuration.setAllowCredentials(true);

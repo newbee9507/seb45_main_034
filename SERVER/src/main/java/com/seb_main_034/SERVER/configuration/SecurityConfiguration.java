@@ -35,18 +35,6 @@ public class SecurityConfiguration {
     private final UsersDetailsService usersDetailsService;
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return new WebSecurityCustomizer() {
-            @Override
-            public void customize(WebSecurity web) {
-                web.ignoring()
-                        .antMatchers(HttpMethod.OPTIONS, "/**")
-                        .antMatchers("/error", "/css/**", "/images/**", "/js/**", "/static/**", "$AUTH_EXTERNAL_BASE_URL/**", "$EXTERNAL_URL/**");
-            }
-        };
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.headers().frameOptions().sameOrigin()
@@ -64,7 +52,7 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->authorize
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+
                         .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/update/**").hasAnyRole("USER", "ADMIN") // 회원과 관리자는 회원정보 수정에 접근가능
@@ -99,10 +87,10 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
                                                       "http://localhost:8080",
                                                       "http://miniflix.s3-website.ap-northeast-2.amazonaws.com",
-                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com:8080"));
+                                                      "ec2-54-180-87-8.ap-northeast-2.compute.amazonaws.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // CorsConfigurationSource의 구현클래스 객체 생성
         source.registerCorsConfiguration("/**", configuration); // 모든 url에 위에서 설정한 cors 설정 적용

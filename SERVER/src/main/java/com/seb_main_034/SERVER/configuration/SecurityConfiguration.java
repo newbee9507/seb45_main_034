@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,6 +32,19 @@ public class SecurityConfiguration {
     private final JwtTokenizer jwtTokenizer;
     private final UsersAuthorityUtils authorityUtils;
     private final UsersDetailsService usersDetailsService;
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return new WebSecurityCustomizer() {
+            @Override
+            public void customize(WebSecurity web) {
+                web.ignoring()
+                        .antMatchers(HttpMethod.OPTIONS, "/**")
+                        .antMatchers("/error", "/css/**", "/images/**", "/js/**", "/static/**", "$AUTH_EXTERNAL_BASE_URL/**", "$EXTERNAL_URL/**");
+            }
+        };
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

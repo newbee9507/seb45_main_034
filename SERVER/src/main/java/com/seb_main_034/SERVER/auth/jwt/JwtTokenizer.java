@@ -27,7 +27,7 @@ public class JwtTokenizer {
     private int accessTokenLifeTime = 1;  // accessToken 만료시간 정보
 
     @Getter
-    private int refreshTokenLifeTime = 20160; // refreshToken 만료시간 정보
+    private int refreshTokenLifeTime = 420; // refreshToken 만료시간 정보
 
     // 비밀키를 암호화해 생성
     public String encodeBase64SecretKey(String secretKey) {

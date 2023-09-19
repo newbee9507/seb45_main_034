@@ -7,6 +7,7 @@ import com.seb_main_034.SERVER.auth.service.RefreTokenService;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -70,6 +72,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setHeader("Authorization", bea + accessToken);
         response.setHeader("Refresh", bea + refreshToken); // 필수적이지 않음. 제외할 수 있음.
         response.setHeader("expirationTime", String.valueOf(expirationTime));
+        log.info("Refresh = {}", bea + refreshToken);
         refreTokenService.saveToken(refreshToken);
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);

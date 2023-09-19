@@ -4,7 +4,9 @@ import com.seb_main_034.SERVER.auth.utils.ErrorResponder;
 import com.seb_main_034.SERVER.exception.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +26,9 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         // 검증필터에서 발생한 예외를 여기서 받음. 저장할 때 exception으로 저장했었음.
         Exception exception = (Exception) request.getAttribute("exception");
-        ErrorResponder.sendErrorResponse(response, ExceptionCode.UN_AUTHORITY);
-
+        if (exception instanceof BadCredentialsException || exception instanceof UsernameNotFoundException) {
+            ErrorResponder.sendErrorResponse(response, ExceptionCode.LOGIN_FAIL);
+        }
         logExceptionMessage(authException, exception);
     }
 

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WatchHistoryService {
@@ -19,5 +21,20 @@ public class WatchHistoryService {
         watchHistory.setMovieId(watchHistoryDTO.getMovieId());
         watchHistory.setWatchTime(LocalDateTime.now());
         return watchHistoryRepository.save(watchHistory);
+    }
+
+    public List<WatchHistoryDTO> getWatchHistoryByUserId(Long userId) {
+        List<WatchHistory> histories = watchHistoryRepository.findByUserId(userId);
+        return histories.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private WatchHistoryDTO convertToDTO(WatchHistory watchHistory) {
+        WatchHistoryDTO dto = new WatchHistoryDTO();
+        dto.setUserId(watchHistory.getUserId());
+        dto.setMovieId(watchHistory.getMovieId());
+        dto.setWatchTime(watchHistory.getWatchTime());
+        return dto;
     }
 }

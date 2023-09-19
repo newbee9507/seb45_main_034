@@ -52,7 +52,7 @@ public class SecurityConfiguration {
         http.headers().frameOptions().sameOrigin()
                 .and()
                 .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource()).and()
+                .cors().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 생성X, SecurityContext 정보를 얻기 위해 절대 세션을 사용X
                 .and()
                 .formLogin().disable() // CSR 방식으로 만들기 때문에 SSR 방식에서 사용하는 폼 로그인 비활성화.
@@ -92,17 +92,19 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-//        configuration.setAllowedOrigins(Arrays.asList("localhost:3000", "localhost:8080", "http://miniflix.s3-website.ap-northeast-2.amazonaws.com"));
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000",
+//                                                      "http://localhost:8080",
+//                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com",
+//                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com:8080"));
+        configuration.addAllowedOrigin("*");
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
-        configuration.setAllowCredentials(true);
-
+//        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // CorsConfigurationSource의 구현클래스 객체 생성
         source.registerCorsConfiguration("/**", configuration); // 모든 url에 위에서 설정한 cors 설정 적용
         return source;

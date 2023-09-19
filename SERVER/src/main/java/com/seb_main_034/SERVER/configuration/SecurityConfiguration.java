@@ -101,10 +101,10 @@ public class SecurityConfiguration {
 //                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com",
 //                                                      "http://miniflix.s3-website.ap-northeast-2.amazonaws.com:8080"));
         configuration.addAllowedOrigin("*");
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
+        configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
-//        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // CorsConfigurationSource의 구현클래스 객체 생성
         source.registerCorsConfiguration("/**", configuration); // 모든 url에 위에서 설정한 cors 설정 적용
         return source;

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenService {
+public class RefreTokenService {
 
     private final RefreTokenRepository repository;
 

@@ -1,7 +1,7 @@
 package com.seb_main_034.SERVER.auth.controller;
 
 import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
-import com.seb_main_034.SERVER.auth.service.RefreshTokenService;
+import com.seb_main_034.SERVER.auth.service.RefreTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class RefreTokenController {
 
     private final JwtTokenizer jwtTokenizer;
-    private final RefreshTokenService service;
+    private final RefreTokenService service;
 
     private final String bea = "Bearer ";
 

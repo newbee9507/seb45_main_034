@@ -3,6 +3,7 @@ package com.seb_main_034.SERVER.auth.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seb_main_034.SERVER.auth.jwt.JwtTokenizer;
 import com.seb_main_034.SERVER.auth.dto.LoginDto;
+import com.seb_main_034.SERVER.auth.service.RefreTokenService;
 import com.seb_main_034.SERVER.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -28,6 +29,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager; // UserDetailsService에게 클라이언트가 보낸 토큰으로 검색요청(?) 보낼거라 예상
     private final JwtTokenizer jwtTokenizer;
+    private final RefreTokenService refreTokenService;
 
     private final String bea = "Bearer ";
 
@@ -61,7 +63,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //response 헤더에 엑세스 토큰을 담아 보냄. 이후 클라이언트가 request 헤더에 추가해서 자격증명에 사용
         response.setHeader("Authorization", bea + accessToken);
-        response.setHeader("Refresh", refreshToken); // 필수적이지 않음. 제외할 수 있음.
+        response.setHeader("Refresh", bea + refreshToken); // 필수적이지 않음. 제외할 수 있음.
+        refreTokenService.saveToken(refreshToken);
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }

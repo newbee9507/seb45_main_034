@@ -36,8 +36,7 @@ public class SecurityConfiguration {
         http.headers().frameOptions().sameOrigin()
                 .and()
                 .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource())
-                .and() // 아래의 CorsConfigurationSource를 필터에 적용
+//                .cors().configurationSource(corsConfigurationSource()).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 생성X, SecurityContext 정보를 얻기 위해 절대 세션을 사용X
                 .and()
                 .formLogin().disable() // CSR 방식으로 만들기 때문에 SSR 방식에서 사용하는 폼 로그인 비활성화.
@@ -49,6 +48,7 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize ->authorize
+                        .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/users/**").permitAll() // 비회원은 회원가입, 로그인, OAuth2로그인에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/update/**").hasAnyRole("USER", "ADMIN") // 회원과 관리자는 회원정보 수정에 접근가능
                         .antMatchers(HttpMethod.PATCH, "/api/users/password/**").hasRole("USER") // 스스로의 비밀번호만 변경가능
@@ -79,11 +79,11 @@ public class SecurityConfiguration {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080", "http://miniflix.s3-website.ap-northeast-2.amazonaws.com"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
-        configuration.addAllowedHeader("*");
-        configuration.addExposedHeader("*");
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080", "http://miniflix.s3-website.ap-northeast-2.amazonaws.com"));
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"));
+//        configuration.addAllowedHeader("*");
+//        configuration.addExposedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // CorsConfigurationSource의 구현클래스 객체 생성
         source.registerCorsConfiguration("/**", configuration); // 모든 url에 위에서 설정한 cors 설정 적용

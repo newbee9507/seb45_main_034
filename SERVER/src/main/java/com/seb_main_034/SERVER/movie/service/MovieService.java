@@ -43,6 +43,7 @@ public class MovieService {
             findMovie.setGenre(movie.getGenre());
             findMovie.setStreamingURL(movie.getStreamingURL());
             findMovie.setDescription(movie.getDescription());
+            findMovie.setAverageRating(movie.getAverageRating());
             return movieRepository.save(findMovie);
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"이 영화를 수정할 권한이 없습니다.");

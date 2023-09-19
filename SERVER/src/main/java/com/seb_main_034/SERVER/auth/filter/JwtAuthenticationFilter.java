@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,9 +63,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = delegateAccessToken(user);
         String refreshToken = delegateRefreshToken(user);
 
+        LocalDateTime expirationTime = LocalDateTime.now().plus(30, ChronoUnit.MINUTES);
+
         //response 헤더에 엑세스 토큰을 담아 보냄. 이후 클라이언트가 request 헤더에 추가해서 자격증명에 사용
         response.setHeader("Authorization", bea + accessToken);
         response.setHeader("Refresh", bea + refreshToken); // 필수적이지 않음. 제외할 수 있음.
+        response.setHeader("expirationTime", String.valueOf(expirationTime));
         refreTokenService.saveToken(refreshToken);
 
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);

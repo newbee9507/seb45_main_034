@@ -37,4 +37,7 @@ public class RatingService {
 
         return savedRating;
     }
+    public List<Rating> sendRating(Long movieId) {
+        return ratingRepository.findByMovieId(movieId);
+    }
 }

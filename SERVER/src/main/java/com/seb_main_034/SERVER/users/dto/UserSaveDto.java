@@ -16,11 +16,11 @@ public class UserSaveDto {
     private String email;
 
     @NotBlank(message = "필수 기입 항목입니다")
-    @Length(min = 8)
+    @Length(min = 8, message = "비밀번호는 8자 이상이어야 합니다")
     private String password;
 
     @NotBlank
-    @Length(min = 2)
+    @Length(min = 2, message = "닉네임은 8자 이상이어야 합니다")
     private String nickName;
 
     private String proFilePicture;
